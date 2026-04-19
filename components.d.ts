@@ -27,5 +27,6 @@ declare module 'vue' {
     ElTimePicker: typeof import('element-plus/es')['ElTimePicker']
     Form: typeof import('./src/components/Form/index.vue')['default']
     Input: typeof import('./src/components/Form/components/Input.vue')['default']
+    Select: typeof import('./src/components/Form/components/Select.vue')['default']
   }
 }

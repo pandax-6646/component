@@ -12,8 +12,7 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import Form from "./components/Form/index.vue";
-import { getFormType } from "./components/Form/utils";
-import { widthAsyncError } from "./hooks"; 
+import { widthAsyncError } from "./hooks";
 
 const formRef = ref<{
   getFormData: (isCheck?: boolean) => any;
@@ -22,8 +21,16 @@ const formRef = ref<{
 const formConfig = reactive([
   {
     label: "文本框",
-    type: getFormType("INPUT"),
+    type: "INPUT" as const,
     modelKey: "name",
+    placeholder: "请输入文本",
+    inputType: "textarea" as const,
+    showWordLimit: true,
+    rows: 4,
+    maxlength: 5,
+    showPassword: true,
+    wordLimitPosition: "inside" as const,
+    clearable: true,
     rules: [
       { required: true, message: "请输入文本", trigger: "blur" },
       { min: 3, max: 5, message: "长度必须在 3 - 5", trigger: "blur" },
@@ -38,19 +45,23 @@ const formConfig = reactive([
         trigger: "blur",
       },
     ],
+    change: async (value: any) => {
+      console.log("获取参数", value);
+    },
   },
-  // {
-  //   label: "Activity zone",
-  //   type: getFormType("SELECT"),
-  //   modelKey: "region",
-  //   options: [
-  //     { label: "Zone one", value: "shanghai" },
-  //     { label: "Zone two", value: "beijing" },
-  //   ],
-  //   rules: [{ required: true, message: "请选择活动区域", trigger: "change" }],
-  // },
+  {
+    label: "选择框",
+    type: "SELECT" as const,
+    modelKey: "region",
+    placeholder: "请选择活动区域",
+    options: [
+      { label: "选项一", value: "shanghai" },
+      { label: "选项二", value: "beijing" },
+    ],
+    rules: [{ required: true, message: "请选择活动区域", trigger: "change" }],
+  },
 ]);
-const formData = reactive({});
+const formData = reactive({name: ''});
 
 const handleGetParams = async () => {
   const [params, error] = await widthAsyncError(

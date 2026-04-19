@@ -76,7 +76,29 @@
       :prop="item.modelKey"
       :rules="item.rules"
     >
-      <Input v-if="item.type === 'INPUT'" v-model="data[item.modelKey]" />
+      <Input
+        v-if="item.type === 'INPUT'"
+        v-model="data[item.modelKey]"
+        :placeholder="item.placeholder"
+        :disable="item.disabled"
+        :clearable="item.clearable"
+        :maxlength="item.maxlength"
+        :showWordLimit="item.showWordLimit"
+        :wordLimitPosition="item.wordLimitPosition"
+        :type="item.inputType"
+        :showPassword="item.showPassword"
+        :readonly="item.readonly"
+        :rows="item.rows"
+        :change="item.change"
+      />
+      <Select
+        v-else-if="item.type === 'SELECT'"
+        v-model="data[item.modelKey]"
+        :options="item.options ?? []"
+        :placeholder="item.placeholder"
+        :disable="item.disabled"
+        :clearable="item.clearable"
+      />
     </el-form-item>
   </el-form>
 </template>
@@ -84,9 +106,12 @@
 <script lang="ts" setup>
 import { ref, toRef } from "vue";
 import Input from "./components/Input.vue";
+import Select from "./components/Select.vue";
+
+import { widthAsyncError } from "../../hooks";
+
 import type { IFormConfig } from "./types";
 import type { FormInstance } from "element-plus";
-import { widthAsyncError } from "../../hooks";
 
 const props = defineProps<{
   config: IFormConfig[];
