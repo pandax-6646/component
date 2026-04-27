@@ -5,7 +5,10 @@ export type TFormType =
   | "TIME"
   | "DATETIME"
   | "CHECKBOX"
-  | "RADIO";
+  | "RADIO"
+  | "NUMBER"
+  | "SWITCH"
+  | "UPLOAD";
 
 type TPublicFormConfig = {
   label: string;
@@ -41,4 +44,44 @@ export type TSelect = {
   options?: Array<{ label: string; value: string; disabled?: boolean }>;
 };
 
-export interface IFormConfig extends TText, TPublicFormConfig, TSelect {}
+export type TNumber = {
+  min?: number;
+  max?: number;
+  step?: number;
+  precision?: number;
+  controls?: boolean;
+  controlsPosition?: "right" | "default";
+};
+
+export type TDateTime = {
+  dateType?: "date" | "datetime" | "week" | "month" | "year";
+  format?: string;
+  valueFormat?: string;
+  disabledDate?: (date: Date) => boolean;
+};
+
+export type TSwitch = {
+  activeText?: string;
+  inactiveText?: string;
+  activeValue?: boolean | number | string;
+  inactiveValue?: boolean | number | string;
+  activeColor?: string;
+  inactiveColor?: string;
+};
+
+export type TUpload = {
+  action?: string;
+  headers?: Record<string, string>;
+  data?: Record<string, any>;
+  name?: string;
+  withCredentials?: boolean;
+  showUploadList?: boolean;
+  drag?: boolean;
+  accept?: string;
+  multiple?: boolean;
+  limit?: number;
+  autoUpload?: boolean;
+  tip?: string;
+};
+
+export interface IFormConfig extends TText, TPublicFormConfig, TSelect, TNumber, TDateTime, TSwitch, TUpload {}

@@ -11,22 +11,28 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    Checkbox: typeof import('./src/components/Form/components/Checkbox.vue')['default']
+    DateTimePicker: typeof import('./src/components/Form/components/DateTimePicker.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
-    ElCol: typeof import('element-plus/es')['ElCol']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElInput: typeof import('element-plus/es')['ElInput']
+    ElInputNumber: typeof import('element-plus/es')['ElInputNumber']
     ElOption: typeof import('element-plus/es')['ElOption']
     ElRadio: typeof import('element-plus/es')['ElRadio']
     ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
-    ElTimePicker: typeof import('element-plus/es')['ElTimePicker']
+    ElUpload: typeof import('element-plus/es')['ElUpload']
     Form: typeof import('./src/components/Form/index.vue')['default']
     Input: typeof import('./src/components/Form/components/Input.vue')['default']
+    NumberInput: typeof import('./src/components/Form/components/NumberInput.vue')['default']
+    Radio: typeof import('./src/components/Form/components/Radio.vue')['default']
     Select: typeof import('./src/components/Form/components/Select.vue')['default']
+    Switch: typeof import('./src/components/Form/components/Switch.vue')['default']
+    Upload: typeof import('./src/components/Form/components/Upload.vue')['default']
   }
 }
