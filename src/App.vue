@@ -1,10 +1,16 @@
 <template>
   <div class="app">
-    <Form :config="formConfig" :data="formData" ref="formRef" />
+    <Form
+      :configs="formConfig"
+      :data="formData"
+      ref="formRef"
+      @update:data="handleUpdateFormData"
+    />
 
     <div>
       <el-button @click="handleGetParams">获取参数</el-button>
       <el-button @click="handleResetForm">重置表单</el-button>
+      <el-button @click="handleSetFormData">设置数据</el-button>
     </div>
   </div>
 </template>
@@ -18,6 +24,7 @@ import type { UploadUserFile } from "element-plus";
 const formRef = ref<{
   getFormData: (isCheck?: boolean) => any;
   resetForm: () => void;
+  setFormData: (data: Record<string, any>) => void;
 }>();
 
 const formConfig = reactive([
@@ -30,9 +37,10 @@ const formConfig = reactive([
     showWordLimit: true,
     rows: 4,
     maxlength: 5,
-    showPassword: true,
+    // showPassword: true,
     wordLimitPosition: "inside" as const,
     clearable: true,
+    readonly: true,
     rules: [
       { required: true, message: "请输入文本", trigger: "blur" },
       { min: 3, max: 5, message: "长度必须在 3 - 5", trigger: "blur" },
@@ -69,22 +77,22 @@ const formConfig = reactive([
     step: 1,
     precision: 0,
     controls: true,
-    rules: [
-      { required: true, message: "请输入数量", trigger: "blur" },
-    ],
+    rules: [{ required: true, message: "请输入数量", trigger: "blur" }],
   },
   {
     label: "日期选择",
     type: "DATE" as const,
     modelKey: "date",
+    pickerType: "date",
     placeholder: "请选择日期",
     valueFormat: "YYYY-MM-DD",
     rules: [{ required: true, message: "请选择日期", trigger: "change" }],
   },
   {
     label: "日期时间选择",
-    type: "DATETIME" as const,
+    type: "DATE" as const,
     modelKey: "datetime",
+    pickerType: "datetime",
     placeholder: "请选择日期时间",
     valueFormat: "YYYY-MM-DD HH:mm:ss",
     rules: [{ required: true, message: "请选择日期时间", trigger: "change" }],
@@ -132,7 +140,7 @@ const formConfig = reactive([
 ]);
 
 const formData = reactive({
-  name: "",
+  name: "默认值",
   region: "",
   quantity: null as number | null,
   date: null as Date | string | null,
@@ -153,6 +161,14 @@ const handleGetParams = async () => {
 
 const handleResetForm = () => {
   formRef.value?.resetForm();
+};
+
+const handleUpdateFormData = (data: Record<string, any>) => {
+  console.log("测试数据", data);
+};
+
+const handleSetFormData = () => {
+  formRef.value?.setFormData({ name: "默认asdadasdasda值" });
 };
 </script>
 

@@ -5,13 +5,13 @@
     :headers="headers"
     :data="data"
     :name="name"
-    :with-credentials="withCredentials"
-    :show-upload-list="showUploadList"
-    :drag="drag"
+    :with-credentials="config?.withCredentials"
+    :show-upload-list="config?.showUploadList"
+    :drag="config?.drag"
     :accept="accept"
-    :multiple="multiple"
-    :limit="limit"
-    :auto-upload="autoUpload"
+    :multiple="config?.multiple"
+    :limit="config?.limit"
+    :auto-upload="config?.autoUpload"
     :disabled="disabled"
     :on-change="handleChange"
     :on-preview="handlePreview"
@@ -26,8 +26,8 @@
         {{ placeholder || "点击上传" }}
       </el-button>
     </slot>
-    <template #tip v-if="tip">
-      <div class="el-upload__tip">{{ tip }}</div>
+    <template #tip v-if="config?.tip">
+      <div class="el-upload__tip">{{ config?.tip }}</div>
     </template>
   </el-upload>
 </template>
@@ -42,28 +42,21 @@ const props = defineProps<{
   headers?: Record<string, string>;
   data?: Record<string, any>;
   name?: string;
-  withCredentials?: boolean;
-  showUploadList?: boolean;
-  drag?: boolean;
   accept?: string;
-  multiple?: boolean;
-  limit?: number;
-  autoUpload?: boolean;
   disabled?: boolean;
   placeholder?: string;
-  tip?: string;
-  onChange?: UploadProps["onChange"];
-  onPreview?: UploadProps["onPreview"];
-  onRemove?: UploadProps["onRemove"];
-  onSuccess?: UploadProps["onSuccess"];
-  onError?: UploadProps["onError"];
-  onProgress?: UploadProps["onProgress"];
-  onExceed?: UploadProps["onExceed"];
+  config?: any;
 }>();
 
 const emit = defineEmits<{
   (event: "update:modelValue", value: UploadUserFile[]): void;
 }>();
+
+const action = computed(() => props.action || props.config?.action || "");
+const headers = computed(() => props.headers || props.config?.headers);
+const data = computed(() => props.data || props.config?.data);
+const name = computed(() => props.name || props.config?.name || "file");
+const accept = computed(() => props.accept || props.config?.accept || "");
 
 const innerFileList = computed({
   get: () => props.modelValue || [],
@@ -71,15 +64,15 @@ const innerFileList = computed({
 });
 
 const handleChange: UploadProps["onChange"] = (uploadFile, uploadFiles) => {
-  props.onChange?.(uploadFile, uploadFiles);
+  props.config?.onChange?.(uploadFile, uploadFiles);
 };
 
 const handlePreview: UploadProps["onPreview"] = (uploadFile) => {
-  props.onPreview?.(uploadFile);
+  props.config?.onPreview?.(uploadFile);
 };
 
 const handleRemove: UploadProps["onRemove"] = (uploadFile, uploadFiles) => {
-  props.onRemove?.(uploadFile, uploadFiles);
+  props.config?.onRemove?.(uploadFile, uploadFiles);
 };
 
 const handleSuccess: UploadProps["onSuccess"] = (
@@ -87,7 +80,7 @@ const handleSuccess: UploadProps["onSuccess"] = (
   uploadFile,
   uploadFiles,
 ) => {
-  props.onSuccess?.(response, uploadFile, uploadFiles);
+  props.config?.onSuccess?.(response, uploadFile, uploadFiles);
 };
 
 const handleError: UploadProps["onError"] = (
@@ -95,7 +88,7 @@ const handleError: UploadProps["onError"] = (
   uploadFile,
   uploadFiles,
 ) => {
-  props.onError?.(error, uploadFile, uploadFiles);
+  props.config?.onError?.(error, uploadFile, uploadFiles);
 };
 
 const handleProgress: UploadProps["onProgress"] = (
@@ -103,12 +96,10 @@ const handleProgress: UploadProps["onProgress"] = (
   uploadFile,
   uploadFiles,
 ) => {
-  props.onProgress?.(event, uploadFile, uploadFiles);
+  props.config?.onProgress?.(event, uploadFile, uploadFiles);
 };
 
 const handleExceed: UploadProps["onExceed"] = (files, uploadFiles) => {
-  props.onExceed?.(files, uploadFiles);
+  props.config?.onExceed?.(files, uploadFiles);
 };
 </script>
-
-<style lang="scss" scoped></style>

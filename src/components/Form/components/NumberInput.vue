@@ -3,13 +3,13 @@
     v-model="innerValue"
     :placeholder="placeholder"
     :disabled="disabled"
-    :clearable="clearable"
-    :min="min"
-    :max="max"
-    :step="step"
-    :precision="precision"
-    :controls="controls"
-    :controls-position="controlsPosition"
+    :clearable="config?.clearable"
+    :min="config?.min"
+    :max="config?.max"
+    :step="config?.step"
+    :precision="config?.precision"
+    :controls="config?.controls"
+    :controls-position="config?.controlsPosition"
   />
 </template>
 
@@ -20,13 +20,8 @@ const props = defineProps<{
   modelValue: number | null;
   placeholder?: string;
   disabled?: boolean;
-  clearable?: boolean;
-  min?: number;
-  max?: number;
-  step?: number;
-  precision?: number;
-  controls?: boolean;
-  controlsPosition?: "right" | "default";
+
+  config?: any;
 }>();
 
 const emit = defineEmits<{
@@ -38,5 +33,3 @@ const innerValue = computed({
   set: (value: number | null) => emit("update:modelValue", value),
 });
 </script>
-
-<style lang="scss" scoped></style>

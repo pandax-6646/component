@@ -2,15 +2,14 @@ export type TFormType =
   | "INPUT"
   | "SELECT"
   | "DATE"
-  | "TIME"
-  | "DATETIME"
   | "CHECKBOX"
   | "RADIO"
   | "NUMBER"
   | "SWITCH"
+  | "READONLY"
   | "UPLOAD";
 
-type TPublicFormConfig = {
+type TPublicFormConfigs = {
   label: string;
   type: TFormType;
   modelKey: string;
@@ -53,8 +52,9 @@ export type TNumber = {
   controlsPosition?: "right" | "default";
 };
 
+export type TDateType = "date" | "datetime" | "week" | "month" | "year";
 export type TDateTime = {
-  dateType?: "date" | "datetime" | "week" | "month" | "year";
+  dateType?: TDateType;
   format?: string;
   valueFormat?: string;
   disabledDate?: (date: Date) => boolean;
@@ -84,4 +84,4 @@ export type TUpload = {
   tip?: string;
 };
 
-export interface IFormConfig extends TText, TPublicFormConfig, TSelect, TNumber, TDateTime, TSwitch, TUpload {}
+export interface IFormConfigs extends TText, TPublicFormConfigs, TSelect, TNumber, TDateTime, TSwitch, TUpload {}

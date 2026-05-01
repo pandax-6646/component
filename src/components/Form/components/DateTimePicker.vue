@@ -4,39 +4,32 @@
     :type="pickerType"
     :placeholder="placeholder"
     :disabled="disabled"
-    :clearable="clearable"
-    :format="format"
-    :value-format="valueFormat"
-    :disabled-date="disabledDate"
-    :shortcuts="shortcuts"
+    :clearable="config?.clearable"
+    :format="config?.format"
+    :value-format="config?.valueFormat"
+    :disabled-date="config?.disabledDate"
+    :shortcuts="config?.shortcuts"
   />
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
+import type { TDateType } from "../types";
 
 const props = defineProps<{
   modelValue: Date | string | null;
-  type?: "date" | "datetime" | "week" | "month" | "year";
   placeholder?: string;
   disabled?: boolean;
-  clearable?: boolean;
-  format?: string;
-  valueFormat?: string;
-  disabledDate?: (date: Date) => boolean;
-  shortcuts?: Array<{ text: string; value: Date | (() => Date) }>;
+  pickerType: TDateType;
+  config?: any;
 }>();
 
 const emit = defineEmits<{
   (event: "update:modelValue", value: Date | string | null): void;
 }>();
 
-const pickerType = computed(() => props.type || "date");
-
 const innerValue = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
 });
 </script>
-
-<style lang="scss" scoped></style>

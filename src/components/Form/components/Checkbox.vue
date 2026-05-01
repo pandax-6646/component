@@ -1,12 +1,12 @@
 <template>
   <el-checkbox-group v-model="innerValue" :disabled="disabled">
     <el-checkbox
-      v-for="option in options"
-      :key="option.value"
-      :value="option.value"
-      :disabled="option.disabled"
+      v-for="{label, value, disabled} in options"
+      :key="value"
+      :value="value"
+      :disabled="disabled"
     >
-      {{ option.label }}
+      {{ label }}
     </el-checkbox>
   </el-checkbox-group>
 </template>
@@ -18,6 +18,7 @@ const props = defineProps<{
   modelValue: string[];
   options: Array<{ label: string; value: string; disabled?: boolean }>;
   disabled?: boolean;
+  config?: any;
 }>();
 
 const emit = defineEmits<{
@@ -29,5 +30,3 @@ const innerValue = computed({
   set: (value: string[]) => emit("update:modelValue", value),
 });
 </script>
-
-<style lang="scss" scoped></style>

@@ -31,6 +31,7 @@ declare module 'vue' {
     Input: typeof import('./src/components/Form/components/Input.vue')['default']
     NumberInput: typeof import('./src/components/Form/components/NumberInput.vue')['default']
     Radio: typeof import('./src/components/Form/components/Radio.vue')['default']
+    ReadOnly: typeof import('./src/components/Form/components/ReadOnly.vue')['default']
     Select: typeof import('./src/components/Form/components/Select.vue')['default']
     Switch: typeof import('./src/components/Form/components/Switch.vue')['default']
     Upload: typeof import('./src/components/Form/components/Upload.vue')['default']

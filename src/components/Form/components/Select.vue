@@ -1,10 +1,15 @@
 <template>
-  <el-select v-model="modelValue" :placeholder="placeholder">
+  <el-select
+    v-model="innerValue"
+    :placeholder="placeholder"
+    :disabled="disabled"
+  >
     <el-option
-      :label="option.label"
-      :value="option.value"
-      v-for="option in options"
-      :key="option.value"
+      v-for="{ label, value, disabled } in options"
+      :label="label"
+      :value="value"
+      :key="value"
+      :disabled="disabled"
     />
   </el-select>
 </template>
@@ -13,21 +18,20 @@
 import { computed } from "vue";
 
 const props = defineProps<{
-  options: { label: string; value: any }[];
+  options: Array<{ label: string; value: any; disabled?: boolean }>;
   modelValue: any;
   placeholder?: string;
+  disabled?: boolean;
+  clearable?: boolean;
+  config?: any;
 }>();
 
 const emit = defineEmits(["update:modelValue"]);
 
-const modelValue = computed({
-  get: () => {
-    return props.modelValue;
-  },
-  set: (val) => {
-    emit("update:modelValue", val);
-  },
+const options = computed(() => props.options || props.config?.options || []);
+
+const innerValue = computed({
+  get: () => props.modelValue,
+  set: (val) => emit("update:modelValue", val),
 });
 </script>
-
-<style lang="scss" scoped></style>

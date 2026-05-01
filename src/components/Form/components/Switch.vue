@@ -2,12 +2,12 @@
   <el-switch
     v-model="innerValue"
     :disabled="disabled"
-    :active-text="activeText"
-    :inactive-text="inactiveText"
-    :active-value="activeValue"
-    :inactive-value="inactiveValue"
-    :active-color="activeColor"
-    :inactive-color="inactiveColor"
+    :active-text="config?.activeText"
+    :inactive-text="config?.inactiveText"
+    :active-value="config?.activeValue"
+    :inactive-value="config?.inactiveValue"
+    :active-color="config?.activeColor"
+    :inactive-color="config?.inactiveColor"
   />
 </template>
 
@@ -17,12 +17,7 @@ import { computed } from "vue";
 const props = defineProps<{
   modelValue: boolean;
   disabled?: boolean;
-  activeText?: string;
-  inactiveText?: string;
-  activeValue?: boolean | number | string;
-  inactiveValue?: boolean | number | string;
-  activeColor?: string;
-  inactiveColor?: string;
+  config?: any;
 }>();
 
 const emit = defineEmits<{
@@ -34,5 +29,3 @@ const innerValue = computed({
   set: (value: boolean) => emit("update:modelValue", value),
 });
 </script>
-
-<style lang="scss" scoped></style>
