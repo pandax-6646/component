@@ -89,8 +89,6 @@ import Switch from "./components/Switch.vue";
 import Upload from "./components/Upload.vue";
 import ReadOnly from "./components/ReadOnly.vue";
 
-import { widthAsyncError } from "../../hooks";
-
 import type { IFormConfigs } from "./types";
 import type { FormInstance, FormValidateCallback } from "element-plus";
 
@@ -112,16 +110,18 @@ const getFormData = async (
   isCheck?: boolean,
 ): Promise<Record<string, any> | boolean> => {
   if (!formRef.value) return false;
+  try {
+    if (isCheck) {
+      await formRef.value?.validate();
+    }
 
-  if (isCheck) {
-    const [isValid] = await widthAsyncError(
-      formRef.value?.validate() ?? Promise.resolve(false),
-    );
+    return data.value;
+  } catch (error: any) {
+    const errorFields = Object.keys(error);
+    formRef.value?.scrollToField(errorFields[0]);
 
-    if (!isValid) return false;
+    return Promise.reject(false);
   }
-
-  return data.value;
 };
 
 const validateFields = (fields: IValidateFields[]) => {
@@ -138,10 +138,18 @@ const resetForm = () => {
   formRef.value?.resetFields();
 };
 
-const updateConfigs = (configs: IFormConfigs[], data: Record<string, any>) => {
+const updateConfigs = (
+  configs: IFormConfigs[],
+  data: Record<string, any>,
+  isValid = true,
+) => {
   formConfigs.value = configs.filter(({ isShow = true }) =>
     typeof isShow === "function" ? isShow(data) : isShow,
   );
+
+  if (isValid) {
+    getFormData(true);
+  }
 };
 
 const emit = defineEmits<{
@@ -159,7 +167,7 @@ watch(
 watch(
   props.configs,
   (newVal) => {
-    updateConfigs(newVal, data.value);
+    updateConfigs(newVal, data.value, false);
   },
   { deep: true, immediate: true },
 );

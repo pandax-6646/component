@@ -26,7 +26,7 @@ const formRef = ref();
 
 const formConfig = reactive([
   {
-    // isShow: ({ region }: Record<string, any>) => region === '1',
+    isShow: ({ region }: Record<string, any>) => region === "1",
     label: "文本框",
     type: "INPUT" as const,
     modelKey: "name",
@@ -57,7 +57,7 @@ const formConfig = reactive([
     label: "选择框",
     type: "SELECT" as const,
     modelKey: "region",
-    placeholder: "请选择活动区域",
+    placeholder: "选第一个看看",
     options: [
       { label: "选项一", value: "1" },
       { label: "选项二", value: "2" },
