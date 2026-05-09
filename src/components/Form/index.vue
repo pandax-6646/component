@@ -1,6 +1,6 @@
 <template>
   <el-form
-    ref="ruleFormRef"
+    ref="formRef"
     :model="data"
     label-width="auto"
     style="max-width: 600px"
@@ -9,7 +9,7 @@
       v-for="(
         { label, modelKey, type, placeholder, disabled, rules, ...config },
         index
-      ) in configs"
+      ) in formConfigs"
       :label="label"
       :key="index"
       :prop="modelKey"
@@ -92,24 +92,30 @@ import ReadOnly from "./components/ReadOnly.vue";
 import { widthAsyncError } from "../../hooks";
 
 import type { IFormConfigs } from "./types";
-import type { FormInstance } from "element-plus";
+import type { FormInstance, FormValidateCallback } from "element-plus";
+
+interface IValidateFields {
+  prop: string;
+  callback: FormValidateCallback;
+}
 
 const props = defineProps<{
   configs: IFormConfigs[];
   data: Record<string, any>;
 }>();
 
-const data = ref(props.data);
-const ruleFormRef = ref<FormInstance>();
+const formConfigs = ref<IFormConfigs[]>();
+const data = ref<Record<string, any>>(props.data);
+const formRef = ref<FormInstance>();
 
 const getFormData = async (
   isCheck?: boolean,
 ): Promise<Record<string, any> | boolean> => {
-  if (!ruleFormRef.value) return false;
+  if (!formRef.value) return false;
 
   if (isCheck) {
     const [isValid] = await widthAsyncError(
-      ruleFormRef.value?.validate() ?? Promise.resolve(false),
+      formRef.value?.validate() ?? Promise.resolve(false),
     );
 
     if (!isValid) return false;
@@ -118,13 +124,24 @@ const getFormData = async (
   return data.value;
 };
 
+const validateFields = (fields: IValidateFields[]) => {
+  fields.forEach(({ prop, callback }) => {
+    formRef.value?.validateField(prop, callback);
+  });
+};
+
 const setFormData = (formData: Record<string, any>) => {
-  data.value = formData;
+  Object.assign(data.value, formData);
 };
 
 const resetForm = () => {
-  if (!ruleFormRef.value) return;
-  ruleFormRef.value.resetFields();
+  formRef.value?.resetFields();
+};
+
+const updateConfigs = (configs: IFormConfigs[], data: Record<string, any>) => {
+  formConfigs.value = configs.filter(({ isShow = true }) =>
+    typeof isShow === "function" ? isShow(data) : isShow,
+  );
 };
 
 const emit = defineEmits<{
@@ -139,9 +156,19 @@ watch(
   { deep: true },
 );
 
+watch(
+  props.configs,
+  (newVal) => {
+    updateConfigs(newVal, data.value);
+  },
+  { deep: true, immediate: true },
+);
+
 defineExpose({
   getFormData,
   resetForm,
   setFormData,
+  updateConfigs,
+  validateFields,
 });
 </script>

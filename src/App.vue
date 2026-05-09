@@ -11,6 +11,7 @@
       <el-button @click="handleGetParams">获取参数</el-button>
       <el-button @click="handleResetForm">重置表单</el-button>
       <el-button @click="handleSetFormData">设置数据</el-button>
+      <el-button @click="handleValidateFields">仅校验文本框和数字框</el-button>
     </div>
   </div>
 </template>
@@ -19,16 +20,13 @@
 import { reactive, ref } from "vue";
 import Form from "./components/Form/index.vue";
 import { widthAsyncError } from "./hooks";
-import type { UploadUserFile } from "element-plus";
 
-const formRef = ref<{
-  getFormData: (isCheck?: boolean) => any;
-  resetForm: () => void;
-  setFormData: (data: Record<string, any>) => void;
-}>();
+const formData = reactive({});
+const formRef = ref();
 
 const formConfig = reactive([
   {
+    // isShow: ({ region }: Record<string, any>) => region === '1',
     label: "文本框",
     type: "INPUT" as const,
     modelKey: "name",
@@ -40,7 +38,6 @@ const formConfig = reactive([
     // showPassword: true,
     wordLimitPosition: "inside" as const,
     clearable: true,
-    readonly: true,
     rules: [
       { required: true, message: "请输入文本", trigger: "blur" },
       { min: 3, max: 5, message: "长度必须在 3 - 5", trigger: "blur" },
@@ -62,10 +59,13 @@ const formConfig = reactive([
     modelKey: "region",
     placeholder: "请选择活动区域",
     options: [
-      { label: "选项一", value: "shanghai" },
-      { label: "选项二", value: "beijing" },
+      { label: "选项一", value: "1" },
+      { label: "选项二", value: "2" },
     ],
     rules: [{ required: true, message: "请选择活动区域", trigger: "change" }],
+    change: (val: any) => {
+      console.log("测试数据val", val);
+    },
   },
   {
     label: "数字输入框",
@@ -139,24 +139,12 @@ const formConfig = reactive([
   },
 ]);
 
-const formData = reactive({
-  name: "默认值",
-  region: "",
-  quantity: null as number | null,
-  date: null as Date | string | null,
-  datetime: null as Date | string | null,
-  gender: "",
-  hobbies: [] as string[],
-  enabled: false,
-  files: [] as UploadUserFile[],
-});
-
 const handleGetParams = async () => {
   const [params, error] = await widthAsyncError(
     formRef.value?.getFormData(true),
   );
 
-  console.log("测试数据", params, error);
+  console.log("校验数据并返回填写的数据", params, error);
 };
 
 const handleResetForm = () => {
@@ -164,11 +152,31 @@ const handleResetForm = () => {
 };
 
 const handleUpdateFormData = (data: Record<string, any>) => {
-  console.log("测试数据", data);
+  console.log("表单数据更新", data);
+
+  // 联动展示与隐藏交互功能
+  formRef.value?.updateConfigs(formConfig, data);
 };
 
 const handleSetFormData = () => {
-  formRef.value?.setFormData({ name: "默认asdadasdasda值" });
+  formRef.value?.setFormData({ name: "设置input框默认值" });
+};
+
+const handleValidateFields = () => {
+  formRef.value?.validateFields([
+    {
+      prop: "name",
+      callback: (isValid: boolean, invalidFields?: any) => {
+        console.log("校验name后的回调函数", isValid, invalidFields);
+      },
+    },
+    {
+      prop: "quantity",
+      callback: (isValid: boolean, invalidFields?: any) => {
+        console.log("校验quantity后的回调函数", isValid, invalidFields);
+      },
+    },
+  ]);
 };
 </script>
 

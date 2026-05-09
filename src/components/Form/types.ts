@@ -10,6 +10,7 @@ export type TFormType =
   | "UPLOAD";
 
 type TPublicFormConfigs = {
+  isShow?: boolean | Function;
   label: string;
   type: TFormType;
   modelKey: string;
