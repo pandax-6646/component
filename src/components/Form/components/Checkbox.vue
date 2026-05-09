@@ -1,7 +1,7 @@
 <template>
   <el-checkbox-group v-model="innerValue" :disabled="disabled">
     <el-checkbox
-      v-for="{label, value, disabled} in options"
+      v-for="{ label, value, disabled } in options"
       :key="value"
       :value="value"
       :disabled="disabled"
