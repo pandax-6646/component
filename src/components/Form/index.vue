@@ -138,18 +138,10 @@ const resetForm = () => {
   formRef.value?.resetFields();
 };
 
-const updateConfigs = (
-  configs: IFormConfigs[],
-  data: Record<string, any>,
-  isValid = true,
-) => {
+const updateConfigs = (configs: IFormConfigs[], data: Record<string, any>) => {
   formConfigs.value = configs.filter(({ isShow = true }) =>
     typeof isShow === "function" ? isShow(data) : isShow,
   );
-
-  if (isValid) {
-    getFormData(true);
-  }
 };
 
 const emit = defineEmits<{
@@ -167,7 +159,7 @@ watch(
 watch(
   props.configs,
   (newVal) => {
-    updateConfigs(newVal, data.value, false);
+    updateConfigs(newVal, data.value);
   },
   { deep: true, immediate: true },
 );
