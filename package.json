@@ -12,6 +12,7 @@
     "test:clean-reports": "node scripts/clean-test-reports.js"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
     "element-plus": "^2.13.7",
     "vue": "^3.5.30",
     "vue-router": "^4.6.4"
