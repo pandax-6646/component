@@ -55,9 +55,23 @@
         fixed="right"
       >
         <template #header>
-          <el-icon size="20">
-            <Operation />
-          </el-icon>
+          <el-dropdown :teleported="true">
+            <el-button
+              icon="operation"
+              link
+              style="font-size: 20px; outline-color: transparent"
+            />
+
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item>Action 1</el-dropdown-item>
+                <el-dropdown-item>Action 2</el-dropdown-item>
+                <el-dropdown-item>Action 3</el-dropdown-item>
+                <el-dropdown-item disabled>Action 4</el-dropdown-item>
+                <el-dropdown-item divided>Action 5</el-dropdown-item>
+              </el-dropdown-menu>
+            </template></el-dropdown
+          >
         </template>
 
         <template #default="{ row }">
