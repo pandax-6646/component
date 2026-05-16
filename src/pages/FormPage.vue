@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import Form from "../components/Form/index.vue";
+import Form from "@/components/Form/index.vue";
 import { widthAsyncError } from "../hooks";
 
 const formData = reactive({});
