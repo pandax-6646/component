@@ -1,62 +1,64 @@
 <template>
   <div class="page-home">
-    <el-table :data="tableData" max-height="250">
-      <template v-for="{ prop, label, width, fixed } in columns" :key="prop">
-        <el-table-column
-          :prop="prop"
-          :label="label"
-          :width="width || 120"
-          column-key="id"
-          :fixed="fixed"
-        />
-
-        <el-table-column
-          v-if="prop === type"
-          :width="width || 120"
-          :fixed="fixed"
-        >
-          <template #header>
-            <el-icon size="20">
-              <Operation />
-            </el-icon>
-          </template>
-
-          <template #default="{ row }">
-            <el-button @click="() => console.log(row)" type="text" size="small"
-              >查看</el-button
-            >
-            <el-button @click="() => console.log(row)" type="text" size="small"
-              >编辑</el-button
-            >
-          </template>
-        </el-table-column></template
-      >
-    </el-table>
+    <Table :columns="columns" :data="tableData" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
+import Table from "@/components/Table/index.vue";
+import { OPERATE_FIELD } from "@/utils/constants";
+import type { TColumns } from "@/components/Table/types";
 
-const type = "operations";
-
-const columns = ref<
-  { prop: string; label?: string; width?: number; [key: string]: any }[]
->([
-  { prop: "date", label: "Date" },
-  { prop: "name", label: "Name" },
-  { prop: "state", label: "State" },
-  { prop: "city", label: "City" },
-  { prop: "address", label: "Address" },
-  { prop: "zip", label: "Zip" },
-  { prop: type, width: 160 },
+const columns = ref<TColumns[]>([
+  { type: "selection", fixed: "left", align: "center" },
+  { prop: "date", label: "时间", align: "center" },
+  { prop: "name", label: "名称", align: "center" },
+  { prop: "state", label: "州", align: "center" },
+  {
+    prop: "city",
+    label: "市",
+    align: "center",
+    width: 150,
+    render: (row: any) => `- ${row.city} -`,
+  },
+  {
+    prop: "address",
+    label: "地址",
+    width: 300,
+    sort: true,
+    align: "center",
+    onClick: (row: any) => {
+      console.log("地址被点击了", row);
+    },
+  },
+  { prop: "zip", label: "压缩", align: "center" },
+  {
+    prop: OPERATE_FIELD,
+    width: 160,
+    align: "center",
+    buttonRender: [
+      {
+        label: "查看",
+        onClick: (row: any) => {
+          console.log("查看", row);
+        },
+      },
+      {
+        label: "编辑",
+        onClick: (row: any) => {
+          console.log("编辑", row);
+        },
+      },
+    ],
+  },
 ]);
 
-const tableData = ref([
+const tableData = ref<Record<string, any>[]>([
   {
     id: 1,
     date: "2016-05-01",
-    name: "Tom",
+    name: "",
     state: "California",
     city: "Los Angeles",
     address: "No. 189, Grove St, Los Angeles",
@@ -66,7 +68,7 @@ const tableData = ref([
     id: 2,
     date: "2016-05-02",
     name: "Tom",
-    state: "California",
+    state: "",
     city: "Los Angeles",
     address: "No. 189, Grove St, Los Angeles",
     zip: "CA 90036",

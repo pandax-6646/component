@@ -39,6 +39,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Select: typeof import('./src/components/Form/components/Select.vue')['default']
     Switch: typeof import('./src/components/Form/components/Switch.vue')['default']
+    Table: typeof import('./src/components/Table/index.vue')['default']
     Upload: typeof import('./src/components/Form/components/Upload.vue')['default']
   }
 }
