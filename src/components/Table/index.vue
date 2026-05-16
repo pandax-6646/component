@@ -1,5 +1,15 @@
 <template>
-  <el-table :data="data" border>
+  <el-table
+    :data="data"
+    border
+    stripe
+    @sort-change="dragSort"
+    :header-cell-style="{
+      color: '#333',
+      fontWeight: 'bold',
+      backgroundColor: 'rgb(236, 245, 255)',
+    }"
+  >
     <template
       v-for="{
         prop,
@@ -75,11 +85,34 @@ defineProps<{
   columns: TColumns[];
   data: Record<string, any>[];
 }>();
+
+// 拖拽排序
+const dragSort = (data: Record<string, any>[], sort: string) => {
+  console.log("排序了", data, sort);
+};
 </script>
 
 <style scoped>
 .isLink {
   color: #409eff;
   cursor: pointer;
+}
+
+.el-table--border:after,
+.el-table--border:before,
+:deep(.el-table__inner-wrapper:before),
+:deep(.el-table__inner-wrapper:after) {
+  background-color: transparent !important;
+}
+
+:deep(.el-table__border-left-patch) {
+  width: 0px !important;
+}
+
+:deep(.el-table__header .el-table__cell:last-child) {
+  border-right-width: 0;
+}
+:deep(.el-table__body .el-table__cell) {
+  border-right-width: 0;
 }
 </style>
