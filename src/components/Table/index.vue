@@ -55,7 +55,11 @@
         fixed="right"
       >
         <template #header>
-          <el-dropdown :teleported="true">
+          <el-dropdown
+            :teleported="true"
+            :hide-on-click="false"
+            trigger="click"
+          >
             <el-button
               icon="operation"
               link
@@ -63,15 +67,19 @@
             />
 
             <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item>Action 1</el-dropdown-item>
-                <el-dropdown-item>Action 2</el-dropdown-item>
-                <el-dropdown-item>Action 3</el-dropdown-item>
-                <el-dropdown-item disabled>Action 4</el-dropdown-item>
-                <el-dropdown-item divided>Action 5</el-dropdown-item>
+              <el-dropdown-menu popper-class="dropdownWrap">
+                <el-dropdown-item v-for="(item, index) in aa" :key="index">
+                  <div class="dropdownItem">
+                    <el-checkbox :label="item.label" v-model="item.hide" />
+                    <div class="iconWrap">
+                      <el-icon :size="16"><Aim /></el-icon>
+                      <el-icon :size="16"><Rank /></el-icon>
+                    </div>
+                  </div>
+                </el-dropdown-item>
               </el-dropdown-menu>
-            </template></el-dropdown
-          >
+            </template>
+          </el-dropdown>
         </template>
 
         <template #default="{ row }">
@@ -91,25 +99,56 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from "vue";
 import { OPERATE_FIELD } from "@/utils/constants";
 import { emptyToDash } from "@/utils";
 import type { TColumns } from "./types";
 
-defineProps<{
+const props = defineProps<{
   columns: TColumns[];
   data: Record<string, any>[];
 }>();
+
+const aa = ref();
 
 // 拖拽排序
 const dragSort = (data: Record<string, any>[], sort: string) => {
   console.log("排序了", data, sort);
 };
+
+watch(
+  props.columns,
+  (val) => {
+    aa.value = val
+      .filter(({ prop }) => prop && prop !== OPERATE_FIELD)
+      .map(({ props, label, hide }) => {
+        return { props, label, isFixed: false, hide: !hide || false };
+      });
+  },
+  {
+    immediate: true,
+    deep: true,
+  },
+);
 </script>
 
 <style scoped>
 .isLink {
   color: #409eff;
   cursor: pointer;
+}
+
+.dropdownItem {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .iconWrap {
+    margin-left: 20rpx;
+    display: flex;
+    align-items: center;
+  }
 }
 
 .el-table--border:after,

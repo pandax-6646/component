@@ -28,6 +28,8 @@ const columns = ref<TColumns[]>([
     width: 300,
     sort: true,
     align: "center",
+    hide: true,
+    onlyScreen: true,
     onClick: (row: any) => {
       console.log("地址被点击了", row);
     },
