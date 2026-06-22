@@ -13,12 +13,7 @@ export const emptyToDash = (value: unknown): string => {
       : value;
   }
 
-  if (
-    typeof value === "number" ||
-    typeof value === "boolean" ||
-    typeof value === "bigint" ||
-    typeof value === "symbol"
-  ) {
+  if (["number", "boolean", "bigint", "symbol"].includes(typeof value)) {
     return String(value);
   }
 
