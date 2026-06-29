@@ -22,7 +22,7 @@
         onClick,
         sort,
         buttonRender,
-      } in columns"
+      } in renderCols"
       :key="prop"
     >
       <el-table-column
@@ -34,7 +34,7 @@
         :resizable="true"
         :type="type"
         :align="align"
-        :sortable="sort ? 'scustom' : false"
+        :sortable="sort ? 'custom' : false"
         v-if="prop !== OPERATE_FIELD"
       >
         <template
@@ -58,25 +58,42 @@
           <el-dropdown
             :teleported="true"
             :hide-on-click="false"
-            trigger="click"
+            trigger="hover"
           >
-            <el-button
-              icon="operation"
-              link
-              style="font-size: 20px; outline-color: transparent"
-            />
+            <el-button icon="operation" link class="filterBtn" />
 
             <template #dropdown>
               <el-dropdown-menu popper-class="dropdownWrap">
-                <el-dropdown-item v-for="(item, index) in aa" :key="index">
-                  <div class="dropdownItem">
-                    <el-checkbox :label="item.label" v-model="item.hide" />
-                    <div class="iconWrap">
-                      <el-icon :size="16"><Aim /></el-icon>
-                      <el-icon :size="16"><Rank /></el-icon>
+                <VueDraggable
+                  v-model="filterCols"
+                  :animation="150"
+                  handle=".handle"
+                  @end="draggerEnd"
+                >
+                  <el-dropdown-item
+                    v-for="(item, index) in filterCols"
+                    :key="index"
+                  >
+                    <div class="dropdownItem">
+                      <div>
+                        <el-checkbox :label="item.label" v-model="item.hide" />
+                      </div>
+                      <div class="iconWrap">
+                        <el-icon
+                          :size="16"
+                          class="icon"
+                          :color="item.isFixed ? '#409eff' : ''"
+                          @click="fixedColItem(item)"
+                        >
+                          <Aim />
+                        </el-icon>
+                        <el-icon :size="16" class="icon handle cursor-move">
+                          <Rank />
+                        </el-icon>
+                      </div>
                     </div>
-                  </div>
-                </el-dropdown-item>
+                  </el-dropdown-item>
+                </VueDraggable>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -100,29 +117,82 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import { VueDraggable } from "vue-draggable-plus";
+
 import { OPERATE_FIELD } from "@/utils/constants";
-import { emptyToDash } from "@/utils";
+import { emptyToDash, sortByStringOrder } from "@/utils";
 import type { TColumns } from "./types";
+import { cloneDeep } from "lodash-es";
 
 const props = defineProps<{
   columns: TColumns[];
   data: Record<string, any>[];
 }>();
 
-const aa = ref();
+interface IFilterCols {
+  prop: string;
+  label: string;
+  isFixed: boolean;
+  hide: boolean;
+}
+const renderCols = ref<TColumns[]>([]);
+const filterCols = ref<IFilterCols[]>([]);
 
-// 拖拽排序
+// 排序
 const dragSort = (data: Record<string, any>[], sort: string) => {
   console.log("排序了", data, sort);
+};
+
+// 结束拖拽
+const draggerEnd = () => {
+  const list = filterCols.value.map(({ prop }) => prop);
+  renderCols.value = sortByStringOrder(renderCols.value, "prop", list);
+};
+
+// 固定列
+const fixedColItem = (currFixColumn: IFilterCols) => {
+  const fixColumns = renderCols.value.filter(
+    (item) => item.fixed && item.prop !== currFixColumn.prop,
+  );
+  const currColumns =
+    renderCols.value.find((item) => item.prop === currFixColumn.prop) || {};
+
+  const scrollColumns = renderCols.value.filter(
+    (item) => !item.fixed && item.prop !== currFixColumn.prop,
+  );
+
+  renderCols.value = [
+    ...fixColumns,
+    Object.assign(currColumns, { fixed: !currFixColumn.isFixed }),
+    ...scrollColumns,
+  ];
+
+  const sortList = renderCols.value.map((item) => item.prop as string);
+  filterCols.value = sortByStringOrder(
+    cloneDeep(filterCols.value),
+    "prop",
+    sortList,
+  ).filter((item) =>
+    item.prop === currFixColumn.prop
+      ? Object.assign(item, { isFixed: !currFixColumn.isFixed })
+      : item,
+  );
 };
 
 watch(
   props.columns,
   (val) => {
-    aa.value = val
+    renderCols.value = val;
+
+    filterCols.value = val
       .filter(({ prop }) => prop && prop !== OPERATE_FIELD)
-      .map(({ props, label, hide }) => {
-        return { props, label, isFixed: false, hide: !hide || false };
+      .map(({ prop, label, hide }: TColumns) => {
+        return {
+          prop: prop || "",
+          label: label || "",
+          isFixed: false,
+          hide: !hide || false,
+        };
       });
   },
   {
@@ -132,10 +202,19 @@ watch(
 );
 </script>
 
-<style scoped>
+<style scoped lange="scss">
 .isLink {
   color: #409eff;
   cursor: pointer;
+}
+
+.filterBtn {
+  font-size: 20px;
+  outline-color: transparent;
+}
+
+:deep(.el-dropdown-menu__item) {
+  cursor: auto;
 }
 
 .dropdownItem {
@@ -143,11 +222,19 @@ watch(
   display: flex;
   align-items: center;
   justify-content: space-between;
+  cursor: auto;
 
   .iconWrap {
-    margin-left: 20rpx;
+    margin-left: 35px;
     display: flex;
     align-items: center;
+
+    .icon {
+      cursor: pointer;
+      &:last-child {
+        margin-left: 10px;
+      }
+    }
   }
 }
 
@@ -165,6 +252,7 @@ watch(
 :deep(.el-table__header .el-table__cell:last-child) {
   border-right-width: 0;
 }
+
 :deep(.el-table__body .el-table__cell) {
   border-right-width: 0;
 }

@@ -11,7 +11,7 @@ import { OPERATE_FIELD } from "@/utils/constants";
 import type { TColumns } from "@/components/Table/types";
 
 const columns = ref<TColumns[]>([
-  { type: "selection", fixed: "left", align: "center" },
+  { type: "selection", fixed: "left", align: "center", width: 80 },
   { prop: "date", label: "时间", align: "center" },
   { prop: "name", label: "名称", align: "center" },
   { prop: "state", label: "州", align: "center" },
@@ -84,6 +84,15 @@ const tableData = ref<Record<string, any>[]>([
     address: "No. 189, Grove St, Los Angeles",
     zip: "CA 90036",
   },
+  {
+    id: 4,
+    date: "2016-05-03",
+    name: "Tom",
+    state: "California",
+    city: "Los Angeles",
+    address: "No. 189, Grove St, Los Angeles",
+    zip: "CA 90036",
+  },
 ]);
 </script>
 
@@ -94,5 +103,6 @@ const tableData = ref<Record<string, any>[]>([
   align-items: center;
   gap: 16px;
   padding: 40px;
+  width: 1000px;
 }
 </style>
