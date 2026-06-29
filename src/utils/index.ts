@@ -60,3 +60,14 @@ export const sortByStringOrder = <T, K extends keyof T>(
     return indexA - indexB;
   });
 };
+
+// 获取localStorage中的数据
+export const getLocalStorage = (key: string) => {
+  return localStorage.getItem(key);
+}
+
+// 设置localStorage中的数据
+export const setLocalStorage = (key: string, value: string | object) => {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+

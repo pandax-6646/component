@@ -76,7 +76,11 @@
                   >
                     <div class="dropdownItem">
                       <div>
-                        <el-checkbox :label="item.label" v-model="item.hide" />
+                        <el-checkbox
+                          :label="item.label"
+                          v-model="item.isChecked"
+                          @change="changeHide(item)"
+                        />
                       </div>
                       <div class="iconWrap">
                         <el-icon
@@ -120,7 +124,12 @@ import { ref, watch } from "vue";
 import { VueDraggable } from "vue-draggable-plus";
 
 import { OPERATE_FIELD } from "@/utils/constants";
-import { emptyToDash, sortByStringOrder } from "@/utils";
+import {
+  emptyToDash,
+  sortByStringOrder,
+  setLocalStorage,
+  getLocalStorage,
+} from "@/utils";
 import type { TColumns } from "./types";
 
 const props = defineProps<{
@@ -133,9 +142,16 @@ interface IFilterCols {
   label: string;
   isFixed: boolean;
   hide: boolean;
+  isChecked: boolean;
 }
 const renderCols = ref<TColumns[]>([]);
 const filterCols = ref<IFilterCols[]>([]);
+
+// 切换隐藏
+const changeHide = (item: IFilterCols) => {
+  item.hide = !item.hide;
+  item.isChecked = !item.isChecked;
+};
 
 // 排序
 const dragSort = (data: Record<string, any>[], sort: string) => {
@@ -146,6 +162,10 @@ const dragSort = (data: Record<string, any>[], sort: string) => {
 const draggerEnd = () => {
   const list = filterCols.value.map(({ prop }) => prop);
   renderCols.value = sortByStringOrder(renderCols.value, "prop", list);
+
+  setLocalStorage("filterCols", {
+    [`${location.host}`]: filterCols.value,
+  });
 };
 
 // 固定列
@@ -173,13 +193,54 @@ const fixedColItem = (currFixColumn: IFilterCols) => {
         ? Object.assign(item, { isFixed: !currFixColumn.isFixed })
         : item,
   );
+
+  setLocalStorage("filterCols", {
+    [`${location.host}`]: filterCols.value,
+  });
 };
 
 watch(
   () => props.columns,
   (val) => {
-    renderCols.value = val;
+    const cacheFilterCols =
+      JSON.parse(getLocalStorage("filterCols") || "{}")?.[`${location.host}`] ||
+      [];
 
+    if (cacheFilterCols.length) {
+      filterCols.value = cacheFilterCols;
+
+      const firstCol = val.find((item) => !item.prop);
+      const lastCol = val.find((item) => item.prop === OPERATE_FIELD);
+
+      const mainCols = sortByStringOrder(
+        val.filter((item) => item.prop !== OPERATE_FIELD && item.prop),
+        "prop",
+        filterCols.value.map((item) => item.prop),
+      );
+
+      if (firstCol) {
+        mainCols.unshift(firstCol);
+      }
+      if (lastCol) {
+        mainCols.push(lastCol);
+      }
+
+      renderCols.value = mainCols.map((item) => {
+        const filterItem = filterCols.value.find(
+          (filterItem) => filterItem.prop === item.prop,
+        );
+
+        if (filterItem) {
+          return Object.assign(item, { fixed: filterItem.isFixed });
+        }
+
+        return item;
+      });
+
+      return;
+    }
+
+    renderCols.value = val;
     filterCols.value = val
       .filter(({ prop }) => prop && prop !== OPERATE_FIELD)
       .map(({ prop, label, hide }: TColumns) => {
@@ -187,7 +248,8 @@ watch(
           prop: prop || "",
           label: label || "",
           isFixed: false,
-          hide: !hide || false,
+          hide: hide || false,
+          isChecked: !hide || false,
         };
       });
   },
