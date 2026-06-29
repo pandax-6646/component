@@ -122,7 +122,6 @@ import { VueDraggable } from "vue-draggable-plus";
 import { OPERATE_FIELD } from "@/utils/constants";
 import { emptyToDash, sortByStringOrder } from "@/utils";
 import type { TColumns } from "./types";
-import { cloneDeep } from "lodash-es";
 
 const props = defineProps<{
   columns: TColumns[];
@@ -168,19 +167,16 @@ const fixedColItem = (currFixColumn: IFilterCols) => {
   ];
 
   const sortList = renderCols.value.map((item) => item.prop as string);
-  filterCols.value = sortByStringOrder(
-    cloneDeep(filterCols.value),
-    "prop",
-    sortList,
-  ).filter((item) =>
-    item.prop === currFixColumn.prop
-      ? Object.assign(item, { isFixed: !currFixColumn.isFixed })
-      : item,
+  filterCols.value = sortByStringOrder(filterCols.value, "prop", sortList).map(
+    (item) =>
+      item.prop === currFixColumn.prop
+        ? Object.assign(item, { isFixed: !currFixColumn.isFixed })
+        : item,
   );
 };
 
 watch(
-  props.columns,
+  () => props.columns,
   (val) => {
     renderCols.value = val;
 
@@ -197,7 +193,6 @@ watch(
   },
   {
     immediate: true,
-    deep: true,
   },
 );
 </script>
@@ -231,6 +226,7 @@ watch(
 
     .icon {
       cursor: pointer;
+
       &:last-child {
         margin-left: 10px;
       }
