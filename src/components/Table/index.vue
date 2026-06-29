@@ -170,21 +170,23 @@ const draggerEnd = () => {
 
 // 固定列
 const fixedColItem = (currFixColumn: IFilterCols) => {
-  const fixColumns = renderCols.value.filter(
-    (item) => item.fixed && item.prop !== currFixColumn.prop,
-  );
-  const currColumns =
-    renderCols.value.find((item) => item.prop === currFixColumn.prop) || {};
+  renderCols.value = renderCols.value.map((item) => {
+    return item.prop === currFixColumn.prop
+      ? Object.assign(item, { fixed: !currFixColumn.isFixed })
+      : item;
+  });
 
-  const scrollColumns = renderCols.value.filter(
-    (item) => !item.fixed && item.prop !== currFixColumn.prop,
-  );
+  const fixColumns = renderCols.value.filter((item) => item.fixed);
+  const sortColumns = renderCols.value.filter((item) => !item.fixed);
 
-  renderCols.value = [
-    ...fixColumns,
-    Object.assign(currColumns, { fixed: !currFixColumn.isFixed }),
-    ...scrollColumns,
-  ];
+  const sortColumnsList = props.columns
+    .filter((item) =>
+      sortColumns.map((item) => item.prop as string).includes(item?.prop || ""),
+    )
+    .map((item) => item.prop as string);
+  const scrollColumns = sortByStringOrder(sortColumns, "prop", sortColumnsList);
+
+  renderCols.value = [...fixColumns, ...scrollColumns];
 
   const sortList = renderCols.value.map((item) => item.prop as string);
   filterCols.value = sortByStringOrder(filterCols.value, "prop", sortList).map(
