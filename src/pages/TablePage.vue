@@ -1,6 +1,6 @@
 <template>
   <div class="page-home">
-    <Table :columns="columns" :data="tableData" />
+    <Table :tableOptions="tableOptions" />
   </div>
 </template>
 
@@ -8,92 +8,59 @@
 import { ref } from "vue";
 import Table from "@/components/Table/index.vue";
 import { OPERATE_FIELD } from "@/utils/constants";
-import type { TColumns } from "@/components/Table/types";
+import type { TTableOptions } from "@/components/Table/types";
 
-const columns = ref<TColumns[]>([
-  { type: "selection", fixed: "left", align: "center", width: 80 },
-  { prop: "date", label: "时间", align: "center" },
-  { prop: "name", label: "名称", align: "center" },
-  { prop: "state", label: "州", align: "center" },
-  {
-    prop: "city",
-    label: "市",
-    align: "center",
-    width: 150,
-    render: (row: any) => `- ${row.city} -`,
-  },
-  {
-    prop: "address",
-    label: "地址",
-    width: 300,
-    sort: true,
-    align: "center",
-    hide: true,
-    onlyScreen: true,
-    onClick: (row: any) => {
-      console.log("地址被点击了", row);
+const tableOptions = ref<TTableOptions>({
+  tableUrl: "/api/list",
+  tableSearchKey: "/table",
+  cols: [
+    { type: "selection", fixed: "left", align: "center", width: 80 },
+    { prop: "date", label: "时间", align: "center" },
+    { prop: "name", label: "名称", align: "center" },
+    { prop: "state", label: "州", align: "center" },
+    {
+      prop: "city",
+      label: "市",
+      align: "center",
+      width: 150,
+      render: (row: any) => `- ${row.city} -`,
     },
-  },
-  { prop: "zip", label: "压缩", align: "center" },
-  {
-    prop: OPERATE_FIELD,
-    width: 160,
-    align: "center",
-    buttonRender: [
-      {
-        label: "查看",
-        onClick: (row: any) => {
-          console.log("查看", row);
-        },
+    {
+      prop: "address",
+      label: "地址",
+      width: 300,
+      sort: true,
+      align: "center",
+      hide: true,
+      onlyScreen: true,
+      onClick: (row: any) => {
+        console.log("地址被点击了", row);
       },
-      {
-        label: "编辑",
-        onClick: (row: any) => {
-          console.log("编辑", row);
+    },
+    { prop: "zip", label: "压缩", align: "center" },
+    {
+      prop: OPERATE_FIELD,
+      width: 160,
+      align: "center",
+      buttonRender: [
+        {
+          label: "查看",
+          key: "view",
+          onClick: (row: any) => {
+            console.log("查看", row);
+          },
         },
-      },
-    ],
-  },
-]);
-
-const tableData = ref<Record<string, any>[]>([
-  {
-    id: 1,
-    date: "2016-05-01",
-    name: "",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-  },
-  {
-    id: 2,
-    date: "2016-05-02",
-    name: "Tom",
-    state: "",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-  },
-  {
-    id: 3,
-    date: "2016-05-03",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-  },
-  {
-    id: 4,
-    date: "2016-05-03",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-  },
-]);
+        {
+          label: "编辑",
+          key: "edit",
+          onClick: (row: any) => {
+            console.log("编辑", row);
+          },
+        },
+      ],
+    },
+  ],
+});
 </script>
 
 <style scoped>

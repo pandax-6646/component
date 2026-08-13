@@ -1,6 +1,6 @@
 <template>
   <el-table
-    :data="data"
+    :data="tableData"
     border
     stripe
     @sort-change="dragSort"
@@ -104,15 +104,16 @@
         </template>
 
         <template #default="{ row }">
-          <el-button
-            v-for="({ label, onClick }, index) in buttonRender"
-            :key="index"
-            @click="() => onClick(row)"
-            type="primary"
-            size="small"
-          >
-            {{ label }}
-          </el-button>
+          <template v-for="{ label, onClick, key } in buttonRender" :key="key">
+            <el-button
+              @click="() => onClick?.(row)"
+              type="primary"
+              size="small"
+              v-if="isShowColsBtn(row, key)"
+            >
+              {{ label }}
+            </el-button>
+          </template>
         </template>
       </el-table-column>
     </template>
@@ -122,8 +123,8 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { VueDraggable } from "vue-draggable-plus";
-
-import { OPERATE_FIELD } from "@/utils/constants";
+import { isNumber } from "lodash";
+import { OPERATE_FIELD, CAN } from "@/utils/constants";
 import {
   emptyToDash,
   sortByStringOrder,
@@ -131,10 +132,11 @@ import {
   getLocalStorage,
 } from "@/utils";
 import type { TColumns } from "./types";
+import type { TTableOptions } from "@/components/Table/types";
 
 const props = defineProps<{
-  columns: TColumns[];
-  data: Record<string, any>[];
+  tableOptions: TTableOptions;
+  data?: Record<string, any>[];
 }>();
 
 interface IFilterCols {
@@ -146,6 +148,7 @@ interface IFilterCols {
 }
 const renderCols = ref<TColumns[]>([]);
 const filterCols = ref<IFilterCols[]>([]);
+const tableData = ref<Record<string, any>[]>([]);
 
 // 切换隐藏
 const changeHide = (item: IFilterCols) => {
@@ -179,7 +182,7 @@ const fixedColItem = (currFixColumn: IFilterCols) => {
   const fixColumns = renderCols.value.filter((item) => item.fixed);
   const sortColumns = renderCols.value.filter((item) => !item.fixed);
 
-  const sortColumnsList = props.columns
+  const sortColumnsList = props.tableOptions.cols
     .filter((item) =>
       sortColumns.map((item) => item.prop as string).includes(item?.prop || ""),
     )
@@ -201,21 +204,46 @@ const fixedColItem = (currFixColumn: IFilterCols) => {
   });
 };
 
+// 获取列表数据
+const getTableData = () => {
+  fetch("/api/list")
+    .then((res) => res.json())
+    .then(({ code, data }) => {
+      if (code === 200) {
+        tableData.value = data.list;
+      }
+    });
+};
+
+const isShowColsBtn = (row: any, key?: string) => {
+  const data = row?.[`${CAN}${key}`];
+  return isNumber(data) && data !== 0;
+};
+
 watch(
-  () => props.columns,
-  (val) => {
+  [() => props.tableOptions, () => props.data],
+  ([tableOptionsVal, dataVal]) => {
+    const { cols, tableUrl } = tableOptionsVal;
     const cacheFilterCols =
       JSON.parse(getLocalStorage("filterCols") || "{}")?.[`${location.host}`] ||
       [];
 
+    if (dataVal?.length && !tableUrl) {
+      tableData.value = dataVal;
+    }
+
+    if (!dataVal?.length && tableUrl) {
+      getTableData();
+    }
+
     if (cacheFilterCols.length) {
       filterCols.value = cacheFilterCols;
 
-      const firstCol = val.find((item) => !item.prop);
-      const lastCol = val.find((item) => item.prop === OPERATE_FIELD);
+      const firstCol = cols.find((item) => !item.prop);
+      const lastCol = cols.find((item) => item.prop === OPERATE_FIELD);
 
       const mainCols = sortByStringOrder(
-        val.filter((item) => item.prop !== OPERATE_FIELD && item.prop),
+        cols.filter((item) => item.prop !== OPERATE_FIELD && item.prop),
         "prop",
         filterCols.value.map((item) => item.prop),
       );
@@ -242,8 +270,8 @@ watch(
       return;
     }
 
-    renderCols.value = val;
-    filterCols.value = val
+    renderCols.value = cols;
+    filterCols.value = cols
       .filter(({ prop }) => prop && prop !== OPERATE_FIELD)
       .map(({ prop, label, hide }: TColumns) => {
         return {

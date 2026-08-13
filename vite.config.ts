@@ -1,15 +1,21 @@
 import { defineConfig } from "vite";
 import { resolve } from "path";
 
+import vue from "@vitejs/plugin-vue";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
-import vue from "@vitejs/plugin-vue";
+import { viteMockServe } from "vite-plugin-mock";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    viteMockServe({
+      mockPath: "mock",
+      enable: true,
+      logger: true,
+    }),
     AutoImport({
       resolvers: [ElementPlusResolver()],
     }),
@@ -19,7 +25,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
+      "@": resolve(__dirname, "src"),
     },
   },
 });
