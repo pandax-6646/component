@@ -1,128 +1,136 @@
 <template>
-  <el-table
-    :data="tableData"
-    border
-    stripe
-    @sort-change="dragSort"
-    :header-cell-style="{
-      color: '#333',
-      fontWeight: 'bold',
-      backgroundColor: 'rgb(236, 245, 255)',
-    }"
-  >
-    <template
-      v-for="{
-        prop,
-        label,
-        width,
-        fixed,
-        type,
-        align,
-        render,
-        onClick,
-        sort,
-        buttonRender,
-      } in renderCols"
-      :key="prop"
+  <div>
+    <tabs :tabCols="tableOptions.tabCols" />
+
+    <el-table
+      :data="tableData"
+      border
+      stripe
+      @sort-change="dragSort"
+      :header-cell-style="{
+        color: '#333',
+        fontWeight: 'bold',
+        backgroundColor: 'rgb(236, 245, 255)',
+      }"
     >
-      <el-table-column
-        :prop="prop"
-        :label="label"
-        :width="width || 120"
-        column-key="id"
-        :fixed="fixed"
-        :resizable="true"
-        :type="type"
-        :align="align"
-        :sortable="sort ? 'custom' : false"
-        v-if="prop !== OPERATE_FIELD"
+      <template
+        v-for="{
+          prop,
+          label,
+          width,
+          fixed,
+          type,
+          align,
+          render,
+          onClick,
+          sort,
+          buttonRender,
+        } in renderCols"
+        :key="prop"
       >
-        <template
-          v-if="(render && typeof render === 'function') || (prop && !type)"
-          #default="{ row }"
+        <el-table-column
+          :prop="prop"
+          :label="label"
+          :width="width || 120"
+          column-key="id"
+          :fixed="fixed"
+          :resizable="true"
+          :type="type"
+          :align="align"
+          :sortable="sort ? 'custom' : false"
+          v-if="prop !== OPERATE_FIELD"
         >
-          <div @click="onClick?.(row)" :class="onClick ? 'isLink' : ''">
-            {{ emptyToDash(render?.(row) || row[prop]) }}
-          </div>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        v-else
-        column-key="id"
-        :align="align"
-        :width="width || 120"
-        fixed="right"
-      >
-        <template #header>
-          <el-dropdown
-            :teleported="true"
-            :hide-on-click="false"
-            trigger="hover"
+          <template
+            v-if="(render && typeof render === 'function') || (prop && !type)"
+            #default="{ row }"
           >
-            <el-button icon="operation" link class="filterBtn" />
-
-            <template #dropdown>
-              <el-dropdown-menu popper-class="dropdownWrap">
-                <VueDraggable
-                  v-model="filterCols"
-                  :animation="150"
-                  handle=".handle"
-                  @end="draggerEnd"
-                >
-                  <el-dropdown-item
-                    v-for="(item, index) in filterCols"
-                    :key="index"
-                  >
-                    <div class="dropdownItem">
-                      <div>
-                        <el-checkbox
-                          :label="item.label"
-                          v-model="item.isChecked"
-                          @change="changeHide(item)"
-                        />
-                      </div>
-                      <div class="iconWrap">
-                        <el-icon
-                          :size="16"
-                          class="icon"
-                          :color="item.isFixed ? '#409eff' : ''"
-                          @click="fixedColItem(item)"
-                        >
-                          <Aim />
-                        </el-icon>
-                        <el-icon :size="16" class="icon handle cursor-move">
-                          <Rank />
-                        </el-icon>
-                      </div>
-                    </div>
-                  </el-dropdown-item>
-                </VueDraggable>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </template>
-
-        <template #default="{ row }">
-          <template v-for="{ label, onClick, key } in buttonRender" :key="key">
-            <el-button
-              @click="() => onClick?.(row)"
-              type="primary"
-              size="small"
-              v-if="isShowColsBtn(row, key)"
-            >
-              {{ label }}
-            </el-button>
+            <div @click="onClick?.(row)" :class="onClick ? 'isLink' : ''">
+              {{ emptyToDash(render?.(row) || row[prop]) }}
+            </div>
           </template>
-        </template>
-      </el-table-column>
-    </template>
-  </el-table>
+        </el-table-column>
+
+        <el-table-column
+          v-else
+          column-key="id"
+          :align="align"
+          :width="width || 120"
+          fixed="right"
+        >
+          <template #header>
+            <el-dropdown
+              :teleported="true"
+              :hide-on-click="false"
+              trigger="hover"
+            >
+              <el-button icon="operation" link class="filterBtn" />
+
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <VueDraggable
+                    v-model="filterCols"
+                    :animation="150"
+                    handle=".handle"
+                    @end="draggerEnd"
+                  >
+                    <el-dropdown-item
+                      v-for="(item, index) in filterCols"
+                      :key="index"
+                    >
+                      <div class="dropdownItem">
+                        <div>
+                          <el-checkbox
+                            :label="item.label"
+                            v-model="item.isChecked"
+                            @change="changeHide(item)"
+                          />
+                        </div>
+                        <div class="iconWrap">
+                          <el-icon
+                            :size="16"
+                            class="icon"
+                            :color="item.isFixed ? '#409eff' : ''"
+                            @click="fixedColItem(item)"
+                          >
+                            <Aim />
+                          </el-icon>
+                          <el-icon :size="16" class="icon handle cursor-move">
+                            <Rank />
+                          </el-icon>
+                        </div>
+                      </div>
+                    </el-dropdown-item>
+                  </VueDraggable>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </template>
+
+          <template #default="{ row }">
+            <template
+              v-for="{ label, onClick, key } in buttonRender"
+              :key="key"
+            >
+              <el-button
+                @click="() => onClick?.(row)"
+                type="primary"
+                size="small"
+                v-if="isShowColsBtn(row, key)"
+              >
+                {{ label }}
+              </el-button>
+            </template>
+          </template>
+        </el-table-column>
+      </template>
+    </el-table>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { VueDraggable } from "vue-draggable-plus";
+import tabs from "./components/tabs.vue";
 import { isNumber } from "lodash";
 import { OPERATE_FIELD, CAN } from "@/utils/constants";
 import {

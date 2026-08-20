@@ -13,10 +13,19 @@ export type TbuttonRender = {
   onClick?: (value: any) => void;
 };
 
+export type TTabCols = {
+  id: string;
+  name: string;
+  isShow: boolean;
+  initActive?: boolean;
+};
+
 export type TTableOptions = {
   cols: TColumns[];
   operateButtonMax?: number;
   isShowTab?: boolean;
   tableUrl?: string;
   tableSearchKey?: string;
+  tabColKey?: string;
+  tabCols: TTabCols[];
 };

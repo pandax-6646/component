@@ -60,6 +60,24 @@ const tableOptions = ref<TTableOptions>({
       ],
     },
   ],
+  tabColKey: "status",
+  tabCols: [
+    {
+      id: "all",
+      name: "全部",
+      isShow: true,
+    },
+    {
+      id: "reject",
+      name: "驳回",
+      isShow: true,
+    },
+    {
+      id: "timeout",
+      name: "超时",
+      isShow: true,
+    },
+  ],
 });
 </script>
 
@@ -67,7 +85,6 @@ const tableOptions = ref<TTableOptions>({
 .page-home {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 16px;
   padding: 40px;
   width: 1000px;

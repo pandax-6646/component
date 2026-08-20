@@ -32,6 +32,8 @@ declare module 'vue' {
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
+    ElTabPane: typeof import('element-plus/es')['ElTabPane']
+    ElTabs: typeof import('element-plus/es')['ElTabs']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     Form: typeof import('./src/components/Form/index.vue')['default']
     Input: typeof import('./src/components/Form/components/Input.vue')['default']
@@ -43,6 +45,7 @@ declare module 'vue' {
     Select: typeof import('./src/components/Form/components/Select.vue')['default']
     Switch: typeof import('./src/components/Form/components/Switch.vue')['default']
     Table: typeof import('./src/components/Table/index.vue')['default']
+    Tabs: typeof import('./src/components/Table/components/tabs.vue')['default']
     Upload: typeof import('./src/components/Form/components/Upload.vue')['default']
   }
 }
