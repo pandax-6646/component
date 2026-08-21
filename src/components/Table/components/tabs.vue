@@ -20,6 +20,14 @@
         </template>
       </el-tab-pane>
     </el-tabs>
+
+    <div class="searchWrap">
+      <el-input
+        v-model="searchValueRef"
+        placeholder="请输入搜索关键字"
+        suffix-icon="search"
+      />
+    </div>
   </div>
 </template>
 
@@ -32,6 +40,7 @@ const props = defineProps<{
 }>();
 
 const tabActiveRef = ref("");
+const searchValueRef = ref("");
 
 // 切换表头的tabs
 const tabClick = (tab: any) => {
