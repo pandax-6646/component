@@ -114,7 +114,6 @@
               <el-button
                 @click="() => onClick?.(row)"
                 type="primary"
-                size="small"
                 v-if="isShowColsBtn(row, key)"
               >
                 {{ label }}

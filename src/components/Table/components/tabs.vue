@@ -1,16 +1,16 @@
 <template>
-  <div>
-    <el-tabs v-model="tabActiveRef" @tab-click="tabClick" class="tabsWrap">
+  <div class="tableHeader">
+    <el-tabs v-model="tabActiveRef" @tab-click="tabClick">
       <el-tab-pane
         v-for="item in tabCols"
         :label="item.name"
         :name="item.id"
         :key="item.id"
       />
-      <el-tab-pane>
+      <el-tab-pane disabled>
         <template #label>
-          <el-dropdown tabindex="9999999999">
-            <span class="el-dropdown-link">
+          <el-dropdown>
+            <span class="moreFilter">
               更多筛选 <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <template #dropdown>
@@ -53,7 +53,21 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-.tabsWrap {
+.tableHeader {
   text-align: left;
+  position: relative;
+
+  :deep(.el-tabs__item.is-disabled) {
+    cursor: pointer;
+  }
+
+  .moreFilter:focus-visible {
+    outline: none;
+  }
+
+  .searchWrap {
+    position: absolute;
+    right: 0; 
+  }
 }
 </style>
