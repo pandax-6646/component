@@ -1,6 +1,9 @@
 <template>
   <div>
-    <tabs :tabCols="tableOptions.tabCols" />
+    <tabs
+      :tabCols="tableOptions.tabCols"
+      :searchButtonCols="tableOptions.searchButtonCols"
+    />
 
     <el-table
       :data="tableData"

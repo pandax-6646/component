@@ -78,6 +78,25 @@ const tableOptions = ref<TTableOptions>({
       isShow: true,
     },
   ],
+  searchButtonCols: [
+    {
+      name: "发起审批",
+      key: "aaa",
+      isShow: true,
+      onClick: function () {
+        console.log("发起审批");
+      },
+    },
+    {
+      name: "审批",
+      key: "bbb",
+      type: "primary",
+      isShow: true,
+      onClick: function () {
+        console.log("审批");
+      },
+    },
+  ],
 });
 </script>
 
