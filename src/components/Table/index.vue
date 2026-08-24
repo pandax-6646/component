@@ -3,6 +3,7 @@
     <tabs
       :tabCols="tableOptions.tabCols"
       :searchButtonCols="tableOptions.searchButtonCols"
+      :tabMoreFilter="tableOptions.tabMoreFilter"
     />
 
     <el-table
@@ -301,7 +302,7 @@ watch(
 
 <style scoped lange="scss">
 .isLink {
-  color: #409eff;
+  color: var(--el-color-primary);
   cursor: pointer;
 }
 

@@ -97,6 +97,32 @@ const tableOptions = ref<TTableOptions>({
       },
     },
   ],
+  tabMoreFilter: [
+    {
+      name: "设备状态",
+      key: "yqm.device_status",
+      radioGroup: [
+        { label: "已绑定", value: "10" },
+        { label: "未绑定", value: "40" },
+      ],
+    },
+    {
+      name: "状态",
+      key: "yqm",
+      radioGroup: [
+        { label: "私有", value: "20" },
+        { label: "公共", value: "41" },
+      ],
+    },
+    {
+      name: "设备选项",
+      key: "device_status",
+      radioGroup: [
+        { value: 41, label: "锁定" },
+        { value: 2, label: "解锁" },
+      ],
+    },
+  ],
 });
 </script>
 

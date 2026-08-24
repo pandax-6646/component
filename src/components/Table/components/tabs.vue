@@ -9,12 +9,28 @@
       />
       <el-tab-pane disabled>
         <template #label>
-          <el-dropdown>
+          <el-dropdown popper-class="moreFilterPopper" ref="dropdownRef" placement="bottom-start">
             <span class="moreFilter">
               更多筛选 <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <template #dropdown>
-              <div class="moreFilterWrap">weqrwrqwer</div>
+              <div class="moreFilterWrap">
+                <div
+                  v-for="item in tabMoreFilter"
+                  :key="item.key"
+                  class="radioGroup"
+                >
+                  <div class="label">{{ item.name }}：</div>
+                  <div
+                    class="radio"
+                    v-for="radio in item.radioGroup"
+                    :key="radio.value"
+                    @click="handleRadio(item.key, radio.value)"
+                  >
+                    {{ radio.label }}
+                  </div>
+                </div>
+              </div>
             </template>
           </el-dropdown>
         </template>
@@ -24,8 +40,9 @@
     <div class="searchWrap">
       <el-input v-model="searchValueRef" placeholder="请输入搜索关键字">
         <template #append>
-          <el-icon @click="advancedQuery"><Search /></el-icon> </template
-      ></el-input>
+          <el-icon @click="advancedQuery"><Search /></el-icon>
+        </template>
+      </el-input>
 
       <div class="searchBtnWrap">
         <template v-for="{ key, name, isShow, onClick } in searchBtnRef">
@@ -40,24 +57,37 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import type { TTabCols, TSearchButtonCols } from "@/components/Table/types";
+import type {
+  TTabCols,
+  TSearchButtonCols,
+  TTabMoreFilter,
+} from "@/components/Table/types";
 
 const props = defineProps<{
   tabCols: TTabCols[];
   searchButtonCols: TSearchButtonCols[];
+  tabMoreFilter: TTabMoreFilter[];
 }>();
 
 const tabActiveRef = ref("");
 const searchValueRef = ref("");
 const searchBtnRef = ref<TSearchButtonCols[]>([]);
+const dropdownRef = ref();
 
 // 切换表头的tabs
 const tabClick = (tab: any) => {
   console.log("测试数据", tab);
 };
 
+// 开启高级查询弹窗
 const advancedQuery = () => {
   console.log("测试数据");
+};
+
+// 点击更多筛选选项
+const handleRadio = (key: string, value: string | number) => {
+  console.log("测试数据", key, value);
+  dropdownRef.value?.handleClose();
 };
 
 watch(
@@ -114,6 +144,33 @@ watch(
       margin-left: 15px;
       display: flex;
     }
+  }
+}
+
+.moreFilterPopper .moreFilterWrap {
+  padding: 10px 20px;
+  font-size: 14px;
+  color: var(--el-text-color-primary);
+
+  .radioGroup {
+    display: flex;
+
+    .label {
+      font-weight: 700;
+    }
+
+    .radio:not(:last-child) {
+      margin-right: 15px;
+    }
+
+    .radio:hover {
+      cursor: pointer;
+      color: var(--el-color-primary);
+    }
+  }
+
+  .radioGroup:not(:last-child) {
+    margin-bottom: 10px;
   }
 }
 </style>

@@ -28,6 +28,17 @@ export type TSearchButtonCols = {
   onClick: (value: any) => void;
 };
 
+export type TRadioGroup = {
+  label: string;
+  value: string | number;
+};
+
+export type TTabMoreFilter = {
+  name: string;
+  key: string;
+  radioGroup: TRadioGroup[];
+};
+
 export type TTableOptions = {
   cols: TColumns[];
   operateButtonMax?: number;
@@ -37,4 +48,5 @@ export type TTableOptions = {
   tabColKey?: string;
   tabCols: TTabCols[];
   searchButtonCols: TSearchButtonCols[];
+  tabMoreFilter: TTabMoreFilter[];
 };
