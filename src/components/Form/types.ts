@@ -85,4 +85,12 @@ export type TUpload = {
   tip?: string;
 };
 
-export interface IFormConfigs extends TText, TPublicFormConfigs, TSelect, TNumber, TDateTime, TSwitch, TUpload {}
+export interface IFormConfigs
+  extends
+    TText,
+    TPublicFormConfigs,
+    TSelect,
+    TNumber,
+    TDateTime,
+    TSwitch,
+    TUpload {}

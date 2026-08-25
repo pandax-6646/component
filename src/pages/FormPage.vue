@@ -19,6 +19,11 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import Form from "@/components/Form/index.vue";
+import {
+  SCREEN_TYPE,
+  INPUT_TYPE,
+  WORD_LIMIT_POSITION,
+} from "@/components/Form/constants";
 import { widthAsyncError } from "../hooks";
 
 const formData = reactive({});
@@ -28,14 +33,14 @@ const formConfig = reactive([
   {
     isShow: ({ region }: Record<string, any>) => region === "1",
     label: "文本框",
-    type: "INPUT" as const,
+    type: SCREEN_TYPE.INPUT,
     modelKey: "name",
     placeholder: "请输入文本",
-    inputType: "textarea" as const,
+    inputType: INPUT_TYPE.textarea,
     showWordLimit: true,
     rows: 4,
     maxlength: 5,
-    wordLimitPosition: "inside" as const,
+    wordLimitPosition: WORD_LIMIT_POSITION.inside,
     clearable: true,
     rules: [
       { required: true, message: "请输入文本", trigger: "blur" },
@@ -54,7 +59,7 @@ const formConfig = reactive([
   },
   {
     label: "选择框",
-    type: "SELECT" as const,
+    type: SCREEN_TYPE.SELECT,
     modelKey: "region",
     placeholder: "选第一个看看",
     options: [
@@ -68,7 +73,7 @@ const formConfig = reactive([
   },
   {
     label: "数字输入框",
-    type: "NUMBER" as const,
+    type: SCREEN_TYPE.NUMBER,
     modelKey: "quantity",
     placeholder: "请输入数量",
     min: 0,
@@ -80,7 +85,7 @@ const formConfig = reactive([
   },
   {
     label: "日期选择",
-    type: "DATE" as const,
+    type: SCREEN_TYPE.DATE,
     modelKey: "date",
     pickerType: "date",
     placeholder: "请选择日期",
@@ -89,7 +94,7 @@ const formConfig = reactive([
   },
   {
     label: "日期时间选择",
-    type: "DATE" as const,
+    type: SCREEN_TYPE.DATE,
     modelKey: "datetime",
     pickerType: "datetime",
     placeholder: "请选择日期时间",
@@ -98,7 +103,7 @@ const formConfig = reactive([
   },
   {
     label: "单选框",
-    type: "RADIO" as const,
+    type: SCREEN_TYPE.RADIO,
     modelKey: "gender",
     options: [
       { label: "男", value: "male" },
@@ -108,7 +113,7 @@ const formConfig = reactive([
   },
   {
     label: "多选框",
-    type: "CHECKBOX" as const,
+    type: SCREEN_TYPE.CHECKBOX,
     modelKey: "hobbies",
     options: [
       { label: "足球", value: "football" },
@@ -119,7 +124,7 @@ const formConfig = reactive([
   },
   {
     label: "开关",
-    type: "SWITCH" as const,
+    type: SCREEN_TYPE.SWITCH,
     modelKey: "enabled",
     activeText: "开启",
     inactiveText: "关闭",
@@ -128,7 +133,7 @@ const formConfig = reactive([
   },
   {
     label: "文件上传",
-    type: "UPLOAD" as const,
+    type: SCREEN_TYPE.UPLOAD,
     modelKey: "files",
     action: "/api/upload",
     multiple: true,
