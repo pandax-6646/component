@@ -8,6 +8,8 @@
 import { ref } from "vue";
 import Table from "@/components/Table/index.vue";
 import { OPERATE_FIELD } from "@/utils/constants";
+import { SCREEN_TYPE } from "@/components/Form/constants";
+import { QUERY_METHOD } from "@/components/Table/constants";
 import type { TTableOptions } from "@/components/Table/types";
 
 const tableOptions = ref<TTableOptions>({
@@ -24,6 +26,12 @@ const tableOptions = ref<TTableOptions>({
       align: "center",
       width: 150,
       render: (row: any) => `- ${row.city} -`,
+      screenInfo: {
+        type: SCREEN_TYPE.INPUT,
+        searchType: QUERY_METHOD.LIKE,
+        name: "city",
+        placeholder: "请输入仪器名称",
+      },
     },
     {
       prop: "address",
@@ -35,6 +43,12 @@ const tableOptions = ref<TTableOptions>({
       onlyScreen: true,
       onClick: (row: any) => {
         console.log("地址被点击了", row);
+      },
+      screenInfo: {
+        type: SCREEN_TYPE.INPUT,
+        searchType: QUERY_METHOD.LIKE,
+        name: "address",
+        placeholder: "请输入仪器名称",
       },
     },
     { prop: "zip", label: "压缩", align: "center" },

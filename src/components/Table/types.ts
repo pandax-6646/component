@@ -1,8 +1,24 @@
+import { QUERY_METHOD } from "./constants";
+import type { TScreenType } from "@/components/Form/types";
+
+
+/** 查询方法的值类型 */
+export type TQueryMethod = (typeof QUERY_METHOD)[keyof typeof QUERY_METHOD];
+
+
+export type TScreenInfo = {
+  type: TScreenType;
+  searchType: TQueryMethod;
+  name: string;
+  placeholder?: string;
+}
+
 export type TColumns = {
   prop?: string;
   label?: string;
   width?: number;
   buttonRender?: TbuttonRender[];
+  screenInfo?: TScreenInfo;
   [key: string]: any;
 };
 

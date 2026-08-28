@@ -9,7 +9,11 @@
       />
       <el-tab-pane disabled>
         <template #label>
-          <el-dropdown popper-class="moreFilterPopper" ref="dropdownRef" placement="bottom-start">
+          <el-dropdown
+            popper-class="moreFilterPopper"
+            ref="moreFilterDropdownRef"
+            placement="bottom-start"
+          >
             <span class="moreFilter">
               更多筛选 <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
@@ -40,7 +44,26 @@
     <div class="searchWrap">
       <el-input v-model="searchValueRef" placeholder="请输入搜索关键字">
         <template #append>
-          <el-icon @click="advancedQuery"><Search /></el-icon>
+          <el-dropdown
+            popper-class="advancedSearchPopper"
+            ref="advancedSearchDropdownRef"
+            placement="bottom-start"
+            trigger="click"
+          >
+            <el-icon>
+              <Search />
+            </el-icon>
+            <template #dropdown>
+              <div class="advancedSearchWrap">
+                <Form
+                  :configs="advancedSearchRef"
+                  :data="formData"
+                  ref="formRef"
+                  :inline="true"
+                />
+              </div>
+            </template>
+          </el-dropdown>
         </template>
       </el-input>
 
@@ -59,6 +82,7 @@
 import { ref, watch } from "vue";
 import type {
   TTabCols,
+  TColumns,
   TSearchButtonCols,
   TTabMoreFilter,
 } from "@/components/Table/types";
@@ -67,32 +91,30 @@ const props = defineProps<{
   tabCols: TTabCols[];
   searchButtonCols: TSearchButtonCols[];
   tabMoreFilter: TTabMoreFilter[];
+  cols: TColumns[];
 }>();
 
 const tabActiveRef = ref("");
 const searchValueRef = ref("");
 const searchBtnRef = ref<TSearchButtonCols[]>([]);
-const dropdownRef = ref();
+const moreFilterDropdownRef = ref();
+const advancedSearchRef = ref();
+const formData = ref({});
 
 // 切换表头的tabs
 const tabClick = (tab: any) => {
   console.log("测试数据", tab);
 };
 
-// 开启高级查询弹窗
-const advancedQuery = () => {
-  console.log("测试数据");
-};
-
 // 点击更多筛选选项
 const handleRadio = (key: string, value: string | number) => {
   console.log("测试数据", key, value);
-  dropdownRef.value?.handleClose();
+  moreFilterDropdownRef.value?.handleClose();
 };
 
 watch(
-  [() => props.tabCols, () => props.searchButtonCols],
-  ([tabColsVal, searchButtonColsVal]) => {
+  [() => props.tabCols, () => props.searchButtonCols, () => props.cols],
+  ([tabColsVal, searchButtonColsVal, colsVal]) => {
     if (tabColsVal?.length) {
       const initRow = tabColsVal.find((item) => item.initActive);
       tabActiveRef.value = initRow?.id || tabColsVal[0].id;
@@ -100,6 +122,18 @@ watch(
 
     if (searchButtonColsVal?.length) {
       searchBtnRef.value = searchButtonColsVal.filter((item) => item.isShow);
+    }
+
+    if (colsVal?.length) {
+      advancedSearchRef.value = colsVal
+        .filter((item) => item?.screenInfo)
+        .map((item) => {
+          return {
+            label: item.label,
+            ...item.screenInfo,
+            modelKey: item?.screenInfo?.name || "",
+          };
+        });
     }
   },
   {
@@ -172,5 +206,11 @@ watch(
   .radioGroup:not(:last-child) {
     margin-bottom: 10px;
   }
+}
+
+.advancedSearchPopper .advancedSearchWrap {
+  padding: 10px 20px;
+  font-size: 14px;
+  color: var(--el-text-color-primary);
 }
 </style>
