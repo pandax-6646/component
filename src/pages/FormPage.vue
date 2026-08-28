@@ -4,7 +4,9 @@
       :configs="formConfig"
       :data="formData"
       ref="formRef"
+      :inline="true"
       @update:data="handleUpdateFormData"
+      style="max-width: 900px"
     />
 
     <div>
@@ -26,7 +28,9 @@ import {
 } from "@/components/Form/constants";
 import { widthAsyncError } from "../hooks";
 
-const formData = reactive({});
+const formData = reactive({
+  readonlyText: "这是一个只读文本",
+});
 const formRef = ref();
 
 const formConfig = reactive([
@@ -140,6 +144,11 @@ const formConfig = reactive([
     limit: 3,
     accept: ".jpg,.png,.pdf",
     tip: "支持 jpg、png、pdf 格式，最多上传3个文件",
+  },
+  {
+    label: "只读文本",
+    type: SCREEN_TYPE.READONLY,
+    modelKey: "readonlyText",
   },
 ]);
 
