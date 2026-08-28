@@ -1,18 +1,16 @@
-export type TFormType =
-  | "INPUT"
-  | "SELECT"
-  | "DATE"
-  | "CHECKBOX"
-  | "RADIO"
-  | "NUMBER"
-  | "SWITCH"
-  | "READONLY"
-  | "UPLOAD";
+import { SCREEN_TYPE, INPUT_TYPE, WORD_LIMIT_POSITION, CONTROLS_POSITION, DATE_TYPE } from "./constants";
+
+export type TScreenType = (typeof SCREEN_TYPE)[keyof typeof SCREEN_TYPE];
+export type TInputType = (typeof INPUT_TYPE)[keyof typeof INPUT_TYPE];
+export type TWordLimitPosition = (typeof WORD_LIMIT_POSITION)[keyof typeof WORD_LIMIT_POSITION];
+export type TControlsPosition = (typeof CONTROLS_POSITION)[keyof typeof CONTROLS_POSITION];
+export type TDateType = (typeof DATE_TYPE)[keyof typeof DATE_TYPE];
+
 
 type TPublicFormConfigs = {
   isShow?: boolean | Function;
   label: string;
-  type: TFormType;
+  type: TScreenType;
   modelKey: string;
   placeholder?: string;
   disabled?: boolean;
@@ -35,9 +33,9 @@ export type TText = {
   showPassword?: boolean;
   readonly?: boolean;
   maxlength?: number;
-  inputType?: "textarea" | "text" | "password";
+  inputType?: TInputType;
   showWordLimit?: boolean;
-  wordLimitPosition?: "inside" | "outside";
+  wordLimitPosition?: TWordLimitPosition;
 };
 
 export type TSelect = {
@@ -50,10 +48,9 @@ export type TNumber = {
   step?: number;
   precision?: number;
   controls?: boolean;
-  controlsPosition?: "right" | "default";
+  controlsPosition?: TControlsPosition;
 };
 
-export type TDateType = "date" | "datetime" | "week" | "month" | "year";
 export type TDateTime = {
   dateType?: TDateType;
   format?: string;
@@ -87,10 +84,10 @@ export type TUpload = {
 
 export interface IFormConfigs
   extends
-    TText,
-    TPublicFormConfigs,
-    TSelect,
-    TNumber,
-    TDateTime,
-    TSwitch,
-    TUpload {}
+  TText,
+  TPublicFormConfigs,
+  TSelect,
+  TNumber,
+  TDateTime,
+  TSwitch,
+  TUpload { }

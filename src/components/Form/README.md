@@ -114,7 +114,7 @@ const handleSubmit = async () => {
 | 属性名      | 类型                     | 必填 | 默认值    | 说明                       |
 | ----------- | ------------------------ | ---- | --------- | -------------------------- |
 | label       | `string`               | 是   | -         | 表单标签                   |
-| type        | `TFormType`            | 是   | -         | 组件类型                   |
+| type        | `TScreenType`            | 是   | -         | 组件类型                   |
 | modelKey    | `string`               | 是   | -         | 数据绑定键名               |
 | placeholder | `string`               | 否   | -         | 占位符文本                 |
 | disabled    | `boolean`              | 否   | `false` | 是否禁用                   |
@@ -123,7 +123,7 @@ const handleSubmit = async () => {
 | change      | `(value: any) => void` | 否   | -         | 值变化回调                 |
 | isShow      | `boolean \| Function`   | 否   | `true`  | 是否显示，支持函数动态判断 |
 
-### 表单组件类型（TFormType）
+### 表单组件类型（TScreenType）
 
 | 类型     | 说明       | 支持的额外配置 |
 | -------- | ---------- | -------------- |
@@ -491,14 +491,14 @@ const handleSetData = () => {
 ## 类型导出
 
 ```typescript
-export type TFormType = 'INPUT' | 'SELECT' | 'DATE' | 'CHECKBOX' | 'RADIO' | 'NUMBER' | 'SWITCH' | 'READONLY' | 'UPLOAD'
+export type TScreenType = 'INPUT' | 'SELECT' | 'DATE' | 'CHECKBOX' | 'RADIO' | 'NUMBER' | 'SWITCH' | 'READONLY' | 'UPLOAD'
 
 export type TDateType = 'date' | 'datetime' | 'week' | 'month' | 'year'
 
 export interface IFormConfigs {
   // 通用配置
   label: string
-  type: TFormType
+  type: TScreenType
   modelKey: string
   placeholder?: string
   disabled?: boolean

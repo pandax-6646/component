@@ -1,24 +1,37 @@
 const SCREEN_TYPE = {
-  INPUT: "INPUT" as const,
-  SELECT: "SELECT" as const,
-  DATE: "DATE" as const,
-  CHECKBOX: "CHECKBOX" as const,
-  RADIO: "RADIO" as const,
-  NUMBER: "NUMBER" as const,
-  SWITCH: "SWITCH" as const,
-  READONLY: "READONLY" as const,
-  UPLOAD: "UPLOAD" as const,
+  INPUT: "INPUT",
+  SELECT: "SELECT",
+  DATE: "DATE",
+  CHECKBOX: "CHECKBOX",
+  RADIO: "RADIO",
+  NUMBER: "NUMBER",
+  SWITCH: "SWITCH",
+  READONLY: "READONLY",
+  UPLOAD: "UPLOAD",
 };
 
 const INPUT_TYPE = {
-  textarea: "textarea" as const,
-  text: "text" as const,
-  password: "password" as const,
+  textarea: "textarea",
+  text: "text",
+  password: "password",
 };
 
 const WORD_LIMIT_POSITION = {
-  inside: "inside" as const,
-  outside: "outside" as const,
+  inside: "inside",
+  outside: "outside",
 };
 
-export { SCREEN_TYPE, INPUT_TYPE, WORD_LIMIT_POSITION };
+const CONTROLS_POSITION = {
+  right: "right",
+  default: "default",
+};
+
+const DATE_TYPE = {
+  date: "date",
+  datetime: "datetime",
+  week: "week",
+  month: "month",
+  year: "year",
+};
+
+export { SCREEN_TYPE, INPUT_TYPE, WORD_LIMIT_POSITION, CONTROLS_POSITION, DATE_TYPE };
