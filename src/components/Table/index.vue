@@ -4,6 +4,7 @@
       :tabCols="tableOptions.tabCols"
       :searchButtonCols="tableOptions.searchButtonCols"
       :tabMoreFilter="tableOptions.tabMoreFilter"
+      :cols="tableOptions.cols"
     />
 
     <el-table
@@ -254,7 +255,10 @@ watch(
       const lastCol = cols.find((item) => item.prop === OPERATE_FIELD);
 
       const mainCols = sortByStringOrder(
-        cols.filter((item) => item.prop !== OPERATE_FIELD && item.prop),
+        cols.filter(
+          ({ prop, onlyScreen }) =>
+            prop && prop !== OPERATE_FIELD && !onlyScreen,
+        ),
         "prop",
         filterCols.value.map((item) => item.prop),
       );
@@ -283,7 +287,9 @@ watch(
 
     renderCols.value = cols;
     filterCols.value = cols
-      .filter(({ prop }) => prop && prop !== OPERATE_FIELD)
+      .filter(
+        ({ prop, onlyScreen }) => prop && prop !== OPERATE_FIELD && !onlyScreen,
+      )
       .map(({ prop, label, hide }: TColumns) => {
         return {
           prop: prop || "",
