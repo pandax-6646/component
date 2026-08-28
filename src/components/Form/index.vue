@@ -5,7 +5,7 @@
         { label, modelKey, type, placeholder, disabled, rules, ...config },
         index
       ) in formConfigs"
-      :label="label"
+      :label="`${label} :`"
       :key="index"
       :prop="modelKey"
       :rules="rules"
