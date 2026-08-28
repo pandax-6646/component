@@ -1,10 +1,5 @@
 <template>
-  <el-form
-    ref="formRef"
-    :model="data"
-    label-width="auto"
-    style="max-width: 600px"
-  >
+  <el-form ref="formRef" :model="data" :inline="inline" label-width="auto">
     <el-form-item
       v-for="(
         { label, modelKey, type, placeholder, disabled, rules, ...config },
@@ -100,6 +95,7 @@ interface IValidateFields {
 const props = defineProps<{
   configs: IFormConfigs[];
   data: Record<string, any>;
+  inline?: boolean;
 }>();
 
 const formConfigs = ref<IFormConfigs[]>();

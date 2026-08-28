@@ -3,6 +3,7 @@
     v-model="innerValue"
     :placeholder="placeholder"
     :disabled="disabled"
+    :style="config?.style"
   >
     <el-option
       v-for="{ label, value, disabled } in options"
@@ -35,3 +36,8 @@ const innerValue = computed({
   set: (val) => emit("update:modelValue", val),
 });
 </script>
+<style scoped>
+.el-select {
+ min-width: 220px;
+}
+</style>

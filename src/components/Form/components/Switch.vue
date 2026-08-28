@@ -29,3 +29,9 @@ const innerValue = computed({
   set: (value: boolean) => emit("update:modelValue", value),
 });
 </script>
+
+<style scoped>
+.el-switch {
+  min-width: 220px;
+}
+</style>

@@ -30,3 +30,9 @@ const innerValue = computed({
   set: (value: string) => emit("update:modelValue", value),
 });
 </script>
+
+<style scoped>
+.el-radio-group {
+  min-width: 220px;
+}
+</style>

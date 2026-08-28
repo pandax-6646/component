@@ -10,6 +10,7 @@
     :precision="config?.precision"
     :controls="config?.controls"
     :controls-position="config?.controlsPosition"
+    :style="config?.style"
   />
 </template>
 
@@ -20,7 +21,6 @@ const props = defineProps<{
   modelValue: number | null;
   placeholder?: string;
   disabled?: boolean;
-
   config?: any;
 }>();
 
@@ -33,3 +33,8 @@ const innerValue = computed({
   set: (value: number | null) => emit("update:modelValue", value),
 });
 </script>
+<style scoped>
+.el-input-number {
+  min-width: 220px;
+}
+</style>
