@@ -47,7 +47,7 @@
           <el-dropdown
             popper-class="advancedSearchPopper"
             ref="advancedSearchDropdownRef"
-            placement="bottom-start"
+            placement="bottom-end"
             trigger="click"
           >
             <el-icon>
