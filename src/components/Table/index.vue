@@ -197,7 +197,7 @@
 import { ref, watch } from "vue";
 import { VueDraggable } from "vue-draggable-plus";
 import tabs from "./components/tabs.vue";
-import { isNumber } from "lodash";
+import isNumber from "lodash-es/isNumber";
 import { OPERATE_FIELD, CAN } from "@/utils/constants";
 import {
   emptyToDash,
