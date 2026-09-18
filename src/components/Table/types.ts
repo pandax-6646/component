@@ -44,6 +44,15 @@ export type TSearchButtonCols = {
   onClick: (value: any) => void;
 };
 
+export type TPagebarButtonCols = {
+  name: string;
+  key: string;
+  isShow: boolean;
+  options?: TRadioGroup[];
+  onClick?: (value: any) => void;
+  onMultipleClick?: (value: any) => void;
+}
+
 export type TRadioGroup = {
   label: string;
   value: string | number;
@@ -65,4 +74,5 @@ export type TTableOptions = {
   tabCols: TTabCols[];
   searchButtonCols: TSearchButtonCols[];
   tabMoreFilter: TTabMoreFilter[];
+  pagebarButtonCols: TPagebarButtonCols[];
 };

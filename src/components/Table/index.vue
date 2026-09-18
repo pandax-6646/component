@@ -112,22 +112,37 @@
           </template>
 
           <template #default="{ row }">
-            <template
-              v-for="{ label, onClick, key } in buttonRender"
-              :key="key"
-            >
-              <el-button
-                @click="() => onClick?.(row)"
-                type="primary"
-                v-if="isShowColsBtn(row, key)"
+            <el-button-group>
+              <template
+                v-for="{ label, onClick, key } in buttonRender"
+                :key="key"
               >
-                {{ label }}
-              </el-button>
-            </template>
+                <el-button
+                  @click="() => onClick?.(row)"
+                  type="primary"
+                  v-if="isShowColsBtn(row, key)"
+                >
+                  {{ label }}
+                </el-button>
+              </template>
+            </el-button-group>
           </template>
         </el-table-column>
       </template>
     </el-table>
+
+    <div class="paginationWrap">
+      <el-pagination
+        background
+        :pager-count="4"
+        v-model:current-page="searchParams.page"
+        :total="searchParams.total"
+        :page-sizes="[10, 20, 50, 100]"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
   </div>
 </template>
 
@@ -161,6 +176,23 @@ interface IFilterCols {
 const renderCols = ref<TColumns[]>([]);
 const filterCols = ref<IFilterCols[]>([]);
 const tableData = ref<Record<string, any>[]>([]);
+const searchParams = ref<Record<string, any>>({
+  page: 1,
+  pageSize: 10,
+  total: 1000,
+});
+
+// 分页大小改变
+const handleSizeChange = (val: number) => {
+  searchParams.value.pageSize = val;
+  // getTableData();
+};
+
+// 分页当前改变
+const handleCurrentChange = (val: number) => {
+  searchParams.value.page = val;
+  // getTableData();
+};
 
 // 切换隐藏
 const changeHide = (item: IFilterCols) => {
@@ -360,5 +392,12 @@ watch(
 
 :deep(.el-table__body .el-table__cell) {
   border-right-width: 0;
+}
+
+.paginationWrap {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
