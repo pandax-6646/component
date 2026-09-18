@@ -16,7 +16,7 @@ const tableOptions = ref<TTableOptions>({
   tableUrl: "/api/list",
   tableSearchKey: "/table",
   cols: [
-    { type: "selection", fixed: "left", align: "center", width: 80 },
+    { type: "selection", fixed: "left", align: "center", width: 50 },
     { prop: "date", label: "时间", align: "center" },
     { prop: "name", label: "名称", align: "center" },
     { prop: "state", label: "州", align: "center" },
@@ -135,6 +135,39 @@ const tableOptions = ref<TTableOptions>({
         { value: 41, label: "锁定" },
         { value: 2, label: "解锁" },
       ],
+    },
+  ],
+  pagebarButtonCols: [
+    {
+      name: "批量删除",
+      key: "delete",
+      isShow: true,
+      onClick: function () {
+        console.log("批量删除");
+      },
+    },
+    {
+      name: "批量关闭",
+      key: "close",
+      isShow: true,
+      onClick: function () {
+        console.log("批量关闭");
+      },
+    },
+    {
+      name: "批量开启",
+      key: "open",
+      isShow: true,
+      options: [
+        { label: "删除", value: "delete" },
+        { label: "关闭", value: "close" },
+      ],
+      onClick: function () {
+        console.log("批量开启", "onClick");
+      },
+      onMultipleClick: function (value: string) {
+        console.log("批量开启", "onMultipleClick", value);
+      },
     },
   ],
 });

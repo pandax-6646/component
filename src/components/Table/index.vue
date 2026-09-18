@@ -132,6 +132,53 @@
     </el-table>
 
     <div class="paginationWrap">
+      <div class="pagebarBtnWrap">
+        <template
+          v-for="{
+            key,
+            name,
+            isShow,
+            onClick,
+            options,
+            onMultipleClick,
+          } in tableOptions.pagebarButtonCols"
+        >
+          <el-button-group v-if="isShow" class="btnGroup">
+            <el-button
+              :key="key"
+              @click="onClick"
+              type="primary"
+              v-if="!options?.length"
+            >
+              {{ name }}
+            </el-button>
+
+            <el-dropdown
+              :teleported="true"
+              trigger="hover"
+              placement="top"
+              split-button
+              type="primary"
+              class="btnGroup"
+              v-else
+            >
+              <span @click="onClick">{{ name }}</span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item
+                    v-for="item in options"
+                    :key="item.value"
+                    @click="() => onMultipleClick?.(item.value)"
+                  >
+                    {{ item.label }}
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </el-button-group>
+        </template>
+      </div>
+
       <el-pagination
         background
         :pager-count="4"
@@ -399,5 +446,20 @@ watch(
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  .btnGroup {
+    &:not(:first-child) {
+      margin-left: 10px;
+    }
+  }
+}
+
+:deep(.btnGroup .el-button-group) {
+  .el-button:not(.el-dropdown__caret-button) {
+    border-right-width: 0;
+  }
+  .el-dropdown__caret-button {
+    border-left-width: 0;
+  }
 }
 </style>
