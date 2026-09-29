@@ -30,8 +30,8 @@ const tableOptions = ref<TTableOptions>({
         type: SCREEN_TYPE.INPUT,
         searchType: QUERY_METHOD.LIKE,
         name: "city",
-        placeholder: "请输入仪器名称",
-      },
+        placeholder: "请输入仪器名称"
+      }
     },
     {
       prop: "address",
@@ -48,13 +48,13 @@ const tableOptions = ref<TTableOptions>({
         type: SCREEN_TYPE.INPUT,
         searchType: QUERY_METHOD.LIKE,
         name: "address",
-        placeholder: "请输入仪器名称",
-      },
+        placeholder: "请输入仪器名称"
+      }
     },
     { prop: "zip", label: "压缩", align: "center" },
     {
       prop: OPERATE_FIELD,
-      width: 160,
+      width: 200,
       align: "center",
       buttonRender: [
         {
@@ -62,17 +62,17 @@ const tableOptions = ref<TTableOptions>({
           key: "view",
           onClick: (row: any) => {
             console.log("查看", row);
-          },
+          }
         },
         {
           label: "编辑",
           key: "edit",
           onClick: (row: any) => {
             console.log("编辑", row);
-          },
-        },
-      ],
-    },
+          }
+        }
+      ]
+    }
   ],
   tabColKey: "status",
   tabCols: [
@@ -169,7 +169,7 @@ const tableOptions = ref<TTableOptions>({
         console.log("批量开启", "onMultipleClick", value);
       },
     },
-  ],
+  ]
 });
 </script>
 

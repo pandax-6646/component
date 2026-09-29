@@ -7,6 +7,8 @@
         :name="item.id"
         :key="item.id"
       />
+
+      <!-- 更多筛选 -->
       <el-tab-pane disabled>
         <template #label>
           <el-dropdown
@@ -15,7 +17,8 @@
             placement="bottom-start"
           >
             <span class="moreFilter">
-              更多筛选 <i class="el-icon-arrow-down el-icon--right"></i>
+              更多筛选
+              <el-icon class="icon"><ArrowDown /></el-icon>
             </span>
             <template #dropdown>
               <div class="moreFilterWrap">
@@ -41,6 +44,7 @@
       </el-tab-pane>
     </el-tabs>
 
+    <!-- 快捷搜索框 + 高级搜索 -->
     <div class="searchWrap">
       <el-input v-model="searchValueRef" placeholder="请输入搜索关键字">
         <template #append>
@@ -67,6 +71,7 @@
         </template>
       </el-input>
 
+      <!-- 操作按钮 -->
       <div class="searchBtnWrap">
         <template v-for="{ key, name, isShow, onClick } in searchBtnRef">
           <el-button :key="key" @click="onClick" type="primary" v-if="isShow">
@@ -80,6 +85,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import Form from "@/components/Form/index.vue";
+
+
 import type {
   TTabCols,
   TColumns,
@@ -151,8 +159,13 @@ watch(
     cursor: pointer;
   }
 
-  .moreFilter:focus-visible {
-    outline: none;
+  .moreFilter {
+    display: flex;
+    align-items: center;
+
+    .icon {
+      margin-left: 5px;
+    }
   }
 
   .searchWrap {

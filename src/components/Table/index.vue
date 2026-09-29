@@ -8,9 +8,8 @@
     />
 
     <el-table
-      :data="tableData"
-      border
       stripe
+      :data="tableData"
       @sort-change="dragSort"
       :header-cell-style="{
         color: '#333',
@@ -62,6 +61,7 @@
           :width="width || 120"
           fixed="right"
         >
+          <!-- 筛选列 -->
           <template #header>
             <el-dropdown
               :teleported="true"
@@ -111,6 +111,7 @@
             </el-dropdown>
           </template>
 
+          <!-- 操作列 -->
           <template #default="{ row }">
             <el-button-group>
               <template
@@ -118,9 +119,9 @@
                 :key="key"
               >
                 <el-button
-                  @click="() => onClick?.(row)"
                   type="primary"
                   v-if="isShowColsBtn(row, key)"
+                  @click="() => onClick?.(row)"
                 >
                   {{ label }}
                 </el-button>
@@ -131,6 +132,7 @@
       </template>
     </el-table>
 
+    <!-- 分页组件 -->
     <div class="paginationWrap">
       <div class="pagebarBtnWrap">
         <template
@@ -154,7 +156,6 @@
             </el-button>
 
             <el-dropdown
-              :teleported="true"
               trigger="hover"
               placement="top"
               split-button
@@ -180,7 +181,6 @@
       </div>
 
       <el-pagination
-        background
         :pager-count="4"
         v-model:current-page="searchParams.page"
         :total="searchParams.total"
@@ -396,10 +396,6 @@ watch(
   outline-color: transparent;
 }
 
-:deep(.el-dropdown-menu__item) {
-  cursor: auto;
-}
-
 .dropdownItem {
   flex: 1;
   display: flex;
@@ -433,13 +429,6 @@ watch(
   width: 0px !important;
 }
 
-:deep(.el-table__header .el-table__cell:last-child) {
-  border-right-width: 0;
-}
-
-:deep(.el-table__body .el-table__cell) {
-  border-right-width: 0;
-}
 
 .paginationWrap {
   margin-top: 20px;
@@ -451,6 +440,10 @@ watch(
     &:not(:first-child) {
       margin-left: 10px;
     }
+  }
+
+  :deep(.el-pagination__sizes .el-select) {
+    width: 105px;
   }
 }
 
