@@ -65,6 +65,17 @@
                   ref="formRef"
                   :inline="true"
                 />
+
+                <!-- 高级搜索按钮 -->
+                <div class="advancedSearchBtnWrap">
+                  <el-button type="primary" @click="handleAdvancedSearch">
+                    查询
+                  </el-button>
+                  <el-button @click="formRef?.resetForm()">
+                    重置
+                  </el-button>
+                  <el-button @click="advancedSearchDropdownRef?.handleClose()">取消</el-button>
+                </div>
               </div>
             </template>
           </el-dropdown>
@@ -106,8 +117,12 @@ const tabActiveRef = ref("");
 const searchValueRef = ref("");
 const searchBtnRef = ref<TSearchButtonCols[]>([]);
 const moreFilterDropdownRef = ref();
+
+const advancedSearchDropdownRef = ref();
 const advancedSearchRef = ref();
 const formData = ref({});
+const formRef = ref();
+
 
 // 切换表头的tabs
 const tabClick = (tab: any) => {
@@ -118,6 +133,18 @@ const tabClick = (tab: any) => {
 const handleRadio = (key: string, value: string | number) => {
   console.log("测试数据", key, value);
   moreFilterDropdownRef.value?.handleClose();
+};
+
+// 高级搜索
+const handleAdvancedSearch = async () => {
+  try {
+    const result = await formRef.value?.getFormData()
+
+    console.log("高级搜索", result);
+  } catch (error) {
+    console.log("高级搜索错误", error);
+  }
+
 };
 
 watch(
@@ -222,8 +249,14 @@ watch(
 }
 
 .advancedSearchPopper .advancedSearchWrap {
-  padding: 10px 20px;
+  padding: 20px;
   font-size: 14px;
   color: var(--el-text-color-primary);
+
+  .advancedSearchBtnWrap {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
 }
 </style>
