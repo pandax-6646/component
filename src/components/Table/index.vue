@@ -5,6 +5,13 @@
       :searchButtonCols="tableOptions.searchButtonCols"
       :tabMoreFilter="tableOptions.tabMoreFilter"
       :cols="tableOptions.cols"
+      :initial-advanced-filters="storedAdvancedFilters"
+      @tab-change="onTabChange"
+      @more-filter="onMoreFilter"
+      @keyword-search="onKeywordSearch"
+      @advanced-search="onAdvancedSearch"
+      @advanced-search-save="onAdvancedSearchSave"
+      @advanced-search-reset="onAdvancedSearchReset"
     />
 
     <el-table
@@ -183,6 +190,7 @@
       <el-pagination
         :pager-count="4"
         v-model:current-page="searchParams.page"
+        v-model:page-size="searchParams.pageSize"
         :total="searchParams.total"
         :page-sizes="[10, 20, 50, 100]"
         layout="total, sizes, prev, pager, next, jumper"
@@ -207,6 +215,15 @@ import {
 } from "@/utils";
 import type { TColumns } from "./types";
 import type { TTableOptions } from "@/components/Table/types";
+import {
+  collectTableQueryParams,
+  type TTableFilterState,
+} from "./utils/collectSearchParams";
+import {
+  loadTableSearch,
+  saveTableSearch,
+  clearTableSearch,
+} from "./utils/tableSearchStorage";
 
 const props = defineProps<{
   tableOptions: TTableOptions;
@@ -223,22 +240,150 @@ interface IFilterCols {
 const renderCols = ref<TColumns[]>([]);
 const filterCols = ref<IFilterCols[]>([]);
 const tableData = ref<Record<string, any>[]>([]);
-const searchParams = ref<Record<string, any>>({
+const searchParams = ref({
   page: 1,
   pageSize: 10,
-  total: 1000,
+  total: 0,
 });
 
+const filterState = ref<TTableFilterState>({
+  tabValue: "",
+  keyword: "",
+  moreFilters: {},
+  advancedFilters: {},
+});
+
+const storedAdvancedFilters = ref<Record<string, unknown>>({});
+
+const applyStoredAdvancedSearch = (tableSearchKey?: string) => {
+  const stored = loadTableSearch(tableSearchKey);
+  const advanced = stored?.advancedFilters;
+  if (advanced && Object.keys(advanced).length) {
+    filterState.value.advancedFilters = { ...advanced };
+    storedAdvancedFilters.value = { ...advanced };
+    return;
+  }
+  storedAdvancedFilters.value = {};
+};
+
+const getQueryParams = () =>
+  collectTableQueryParams({
+    tabColKey: props.tableOptions.tabColKey,
+    keywordSearchKey: props.tableOptions.keywordSearchKey,
+    page: searchParams.value.page,
+    pageSize: searchParams.value.pageSize,
+    filters: filterState.value,
+  });
+
+const fetchList = () => {
+  const { tableUrl } = props.tableOptions;
+  if (!tableUrl) return;
+
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(getQueryParams())) {
+    query.set(key, String(value));
+  }
+
+  const url = query.toString() ? `${tableUrl}?${query}` : tableUrl;
+  fetch(url)
+    .then((res) => res.json())
+    .then(({ code, data }) => {
+      if (code === 200) {
+        tableData.value = data.list ?? [];
+        searchParams.value.total = data.total ?? 0;
+        if (data.page != null) {
+          searchParams.value.page = data.page;
+        }
+        if (data.pageSize != null) {
+          searchParams.value.pageSize = data.pageSize;
+        }
+      }
+    });
+};
+
+const resetPageAndFetch = () => {
+  searchParams.value.page = 1;
+  fetchList();
+};
+
+const onTabChange = (tabId: string) => {
+  filterState.value.tabValue = tabId;
+  resetPageAndFetch();
+};
+
+const onMoreFilter = ({
+  key,
+  value,
+}: {
+  key: string;
+  value: string | number;
+}) => {
+  filterState.value.moreFilters[key] = value;
+  resetPageAndFetch();
+};
+
+const onKeywordSearch = (keyword: string) => {
+  filterState.value.keyword = keyword;
+  resetPageAndFetch();
+};
+
+const persistAdvancedSearch = (
+  data: Record<string, unknown>,
+  options: { search: boolean },
+) => {
+  storedAdvancedFilters.value = { ...data };
+  const queryParams = collectTableQueryParams({
+    tabColKey: props.tableOptions.tabColKey,
+    keywordSearchKey: props.tableOptions.keywordSearchKey,
+    page: 1,
+    pageSize: searchParams.value.pageSize,
+    filters: {
+      ...filterState.value,
+      advancedFilters: data,
+    },
+  });
+  saveTableSearch(props.tableOptions.tableSearchKey, {
+    advancedFilters: data,
+    queryParams,
+  });
+
+  if (!options.search) return;
+
+  filterState.value.advancedFilters = { ...data };
+  searchParams.value.page = 1;
+  fetchList();
+};
+
+const onAdvancedSearch = (data: Record<string, unknown>) => {
+  persistAdvancedSearch(data, { search: true });
+};
+
+const onAdvancedSearchSave = ({
+  data,
+  search,
+}: {
+  data: Record<string, unknown>;
+  search: boolean;
+}) => {
+  persistAdvancedSearch(data, { search });
+};
+
+const onAdvancedSearchReset = () => {
+  clearTableSearch(props.tableOptions.tableSearchKey);
+  storedAdvancedFilters.value = {};
+  filterState.value.advancedFilters = {};
+  resetPageAndFetch();
+};
+
 // 分页大小改变
-const handleSizeChange = (val: number) => {
-  searchParams.value.pageSize = val;
-  // getTableData();
+const handleSizeChange = () => {
+  searchParams.value.page = 1;
+  fetchList();
 };
 
 // 分页当前改变
-const handleCurrentChange = (val: number) => {
-  searchParams.value.page = val;
-  // getTableData();
+const handleCurrentChange = () => {
+  fetchList();
 };
 
 // 切换隐藏
@@ -295,17 +440,6 @@ const fixedColItem = (currFixColumn: IFilterCols) => {
   });
 };
 
-// 获取列表数据
-const getTableData = () => {
-  fetch("/api/list")
-    .then((res) => res.json())
-    .then(({ code, data }) => {
-      if (code === 200) {
-        tableData.value = data.list;
-      }
-    });
-};
-
 const isShowColsBtn = (row: any, key?: string) => {
   const data = row?.[`${CAN}${key}`];
   return isNumber(data) && data !== 0;
@@ -324,7 +458,11 @@ watch(
     }
 
     if (!dataVal?.length && tableUrl) {
-      getTableData();
+      const initTab = tableOptionsVal.tabCols?.find((item) => item.initActive);
+      filterState.value.tabValue =
+        initTab?.id || tableOptionsVal.tabCols?.[0]?.id || "";
+      applyStoredAdvancedSearch(tableOptionsVal.tableSearchKey);
+      fetchList();
     }
 
     if (cacheFilterCols.length) {
