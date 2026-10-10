@@ -9,15 +9,12 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
-
 <style scoped>
 .app {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   gap: 20px;
 }
 

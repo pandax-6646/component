@@ -348,4 +348,10 @@ watch(
     }
   }
 }
+
+@media (max-width: 1199px) {
+  .tableHeader .searchWrap .searchBtnWrap {
+    display: none;
+  }
+}
 </style>

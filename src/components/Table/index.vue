@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tableWrap">
     <tabs
       :tabCols="tableOptions.tabCols"
       :searchButtonCols="tableOptions.searchButtonCols"
@@ -591,6 +591,16 @@ watch(
   }
   .el-dropdown__caret-button {
     border-left-width: 0;
+  }
+}
+
+@media (max-width: 1199px) {
+  .tableWrap .paginationWrap {
+    justify-content: flex-end;
+    
+    .pagebarBtnWrap {
+      display: none;
+    }
   }
 }
 </style>
