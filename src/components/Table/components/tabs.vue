@@ -46,7 +46,11 @@
 
     <!-- 快捷搜索框 + 高级搜索 -->
     <div class="searchWrap">
-      <el-input v-model="searchValueRef" placeholder="请输入搜索关键字">
+      <el-input
+        v-model="searchValueRef"
+        placeholder="请输入搜索关键字"
+        @blur="submitKeywordSearch"
+      >
         <template #append>
           <el-dropdown
             popper-class="advancedSearchPopper"
@@ -68,13 +72,27 @@
 
                 <!-- 高级搜索按钮 -->
                 <div class="advancedSearchBtnWrap">
-                  <el-button type="primary" @click="handleAdvancedSearch">
+                  <el-dropdown
+                    split-button
+                    type="primary"
+                    class="saveSearchDropdown"
+                    @click="handleAdvancedSearch"
+                  >
                     查询
-                  </el-button>
-                  <el-button @click="formRef?.resetForm()">
+                    <template #dropdown>
+                      <el-dropdown-menu>
+                        <el-dropdown-item @click="handleSaveSearch(true)">
+                          保存查询参数并查询
+                        </el-dropdown-item>
+                        <el-dropdown-item @click="handleSaveSearch(false)">
+                          仅保存查询参数
+                        </el-dropdown-item>
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                  <el-button @click="handleAdvancedReset">
                     重置
                   </el-button>
-                  <el-button @click="advancedSearchDropdownRef?.handleClose()">取消</el-button>
                 </div>
               </div>
             </template>
@@ -95,9 +113,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, nextTick } from "vue";
 import Form from "@/components/Form/index.vue";
-
 
 import type {
   TTabCols,
@@ -111,6 +128,16 @@ const props = defineProps<{
   searchButtonCols: TSearchButtonCols[];
   tabMoreFilter: TTabMoreFilter[];
   cols: TColumns[];
+  initialAdvancedFilters?: Record<string, unknown>;
+}>();
+
+const emit = defineEmits<{
+  "tab-change": [tabId: string];
+  "more-filter": [payload: { key: string; value: string | number }];
+  "keyword-search": [keyword: string];
+  "advanced-search": [data: Record<string, unknown>];
+  "advanced-search-save": [payload: { data: Record<string, unknown>; search: boolean }];
+  "advanced-search-reset": [];
 }>();
 
 const tabActiveRef = ref("");
@@ -124,28 +151,84 @@ const formData = ref({});
 const formRef = ref();
 
 
-// 切换表头的tabs
-const tabClick = (tab: any) => {
-  console.log("测试数据", tab);
+const clearSearchUi = () => {
+  searchValueRef.value = "";
+  formData.value = {};
+  formRef.value?.resetForm();
 };
 
-// 点击更多筛选选项
+const syncAdvancedForm = (filters?: Record<string, unknown>) => {
+  const nextData = filters ? { ...filters } : {};
+  formData.value = nextData;
+  nextTick(() => {
+    formRef.value?.setFormData(nextData);
+  });
+};
+
+const handleAdvancedReset = () => {
+  clearSearchUi();
+  emit("advanced-search-reset");
+};
+
+const tabClick = () => {
+  if (tabActiveRef.value) {
+    emit("tab-change", tabActiveRef.value);
+  }
+};
+
+// 更多筛选：选中一项后一次性写入查询参数并查询
 const handleRadio = (key: string, value: string | number) => {
-  console.log("测试数据", key, value);
+  emit("more-filter", { key, value });
   moreFilterDropdownRef.value?.handleClose();
 };
 
-// 高级搜索
+// 关键字：回车提交，一次性查询
+const submitKeywordSearch = () => {
+  emit("keyword-search", searchValueRef.value.trim());
+};
+
+const getAdvancedFormData = async () => {
+  const result = await formRef.value?.getFormData();
+  if (result && typeof result === "object") {
+    return result as Record<string, unknown>;
+  }
+  return null;
+};
+
+// 高级搜索：点击查询按钮后一次性提交
 const handleAdvancedSearch = async () => {
   try {
-    const result = await formRef.value?.getFormData()
-
-    console.log("高级搜索", result);
+    const data = await getAdvancedFormData();
+    if (data) {
+      emit("advanced-search", data);
+      advancedSearchDropdownRef.value?.handleClose();
+    }
   } catch (error) {
     console.log("高级搜索错误", error);
   }
-
 };
+
+// 保存查询参数 / 保存并查询（下拉项）
+const handleSaveSearch = async (search: boolean) => {
+  try {
+    const data = await getAdvancedFormData();
+    if (!data) return;
+    emit("advanced-search-save", { data, search });
+    if (search) {
+      advancedSearchDropdownRef.value?.handleClose();
+    }
+  } catch (error) {
+    console.log("保存查询参数错误", error);
+  }
+};
+
+watch(
+  () => props.initialAdvancedFilters,
+  (val) => {
+    syncAdvancedForm(val);
+  },
+  { deep: true, immediate: true },
+);
 
 watch(
   [() => props.tabCols, () => props.searchButtonCols, () => props.cols],
@@ -256,7 +339,13 @@ watch(
   .advancedSearchBtnWrap {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
     margin-top: 10px;
+
+    .saveSearchDropdown {
+      margin-left: 0;
+    }
   }
 }
 </style>
