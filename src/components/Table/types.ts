@@ -70,6 +70,8 @@ export type TTableOptions = {
   isShowTab?: boolean;
   tableUrl?: string;
   tableSearchKey?: string;
+  /** 快捷关键字搜索提交时的查询字段名，默认 keyword */
+  keywordSearchKey?: string;
   tabColKey?: string;
   tabCols: TTabCols[];
   searchButtonCols: TSearchButtonCols[];
