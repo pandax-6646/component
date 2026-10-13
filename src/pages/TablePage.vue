@@ -179,5 +179,6 @@ const tableOptions = ref<TTableOptions>({
   flex-direction: column;
   gap: 16px;
   padding: 40px;
+  /* width: 800px; */
 }
 </style>

@@ -49,7 +49,7 @@
       <el-input
         v-model="searchValueRef"
         placeholder="请输入搜索关键字"
-        @blur="submitKeywordSearch"
+        @input="submitKeywordSearch"
       >
         <template #append>
           <el-dropdown
@@ -115,6 +115,7 @@
 <script setup lang="ts">
 import { ref, watch, nextTick } from "vue";
 import Form from "@/components/Form/index.vue";
+import debounce from 'lodash-es/debounce'
 
 import type {
   TTabCols,
@@ -183,9 +184,9 @@ const handleRadio = (key: string, value: string | number) => {
 };
 
 // 关键字：回车提交，一次性查询
-const submitKeywordSearch = () => {
+const submitKeywordSearch = debounce(() => {
   emit("keyword-search", searchValueRef.value.trim());
-};
+}, 500);
 
 const getAdvancedFormData = async () => {
   const result = await formRef.value?.getFormData();
